@@ -1,4 +1,5 @@
 import Link from "next/link";
+import GoogleSignIn from "@/components/GoogleSignIn";
 
 export default function LoginPage() {
   return (
@@ -74,48 +75,7 @@ export default function LoginPage() {
 
           <div className="space-y-4">
             {/* Google Login */}
-            <button className="w-full h-14 bg-white border border-[#b6b0b6]/20 rounded-xl flex items-center justify-center space-x-3 hover:bg-[#fef8fb] transition-all duration-300 group shadow-sm">
-              <span className="text-xl font-bold text-[#4285F4]">G</span>
-              <span className="font-medium text-[#353136]">
-                ดำเนินการต่อด้วย Google
-              </span>
-            </button>
-
-            {/* Apple Login */}
-            <button className="w-full h-14 bg-zinc-900 text-white rounded-xl flex items-center justify-center space-x-3 hover:opacity-90 transition-all duration-300 shadow-lg shadow-zinc-950/10">
-              <span className="material-symbols-outlined">ios</span>
-              <span className="font-medium">ดำเนินการต่อด้วย Apple</span>
-            </button>
-
-            {/* Divider */}
-            <div className="flex items-center py-4">
-              <div className="flex-grow h-px bg-[#b6b0b6]/20" />
-              <span className="px-4 text-xs font-semibold text-[#7e797e] tracking-widest uppercase">
-                หรือใช้เมล
-              </span>
-              <div className="flex-grow h-px bg-[#b6b0b6]/20" />
-            </div>
-
-            {/* Email */}
-            <div className="space-y-4">
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-[#625e63] tracking-wider uppercase ml-1">
-                  ที่อยู่อีเมล
-                </label>
-                <input
-                  type="email"
-                  placeholder="example@email.com"
-                  className="w-full px-6 py-4 bg-[#ede6eb] rounded-xl border-none outline-none focus:ring-2 focus:ring-[#69558e]/20 placeholder:text-[#7e797e] transition-all text-[#353136]"
-                />
-              </div>
-
-              <Link
-                href="/home"
-                className="w-full h-14 bg-gradient-to-r from-[#69558e] to-[#5c4981] text-[#fef7ff] rounded-xl font-bold text-lg shadow-xl shadow-[#69558e]/20 hover:scale-[1.02] active:scale-[0.98] transition-all grainy-texture overflow-hidden relative flex items-center justify-center"
-              >
-                <span className="relative z-10">เข้าสู่ระบบ</span>
-              </Link>
-            </div>
+            <GoogleSignIn />
           </div>
 
           {/* Footer */}
