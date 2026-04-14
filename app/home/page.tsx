@@ -67,38 +67,33 @@ export default async function HomePage() {
         {/* Sky Banner */}
         <section className="relative w-full h-100 sky-gradient overflow-hidden flex flex-col justify-center items-center px-6">
 
-          {/* ── Sun glow ── */}
-          <div className="absolute top-[-60px] left-1/2 -translate-x-1/2 w-64 h-64 rounded-full bg-white/10 blur-3xl" />
-          <div className="absolute top-[-20px] left-1/2 -translate-x-1/2 w-36 h-36 rounded-full bg-white/20 blur-2xl" />
+          {/* Dark overlay for depth */}
+          <div className="absolute inset-0 bg-black/15 pointer-events-none" />
 
-          {/* ── Layered clouds ── */}
-          {/* far-back large clouds */}
-          <div className="absolute top-6 -left-16 w-80 h-20 bg-white/18 rounded-full blur-2xl" />
-          <div className="absolute top-10 right-[-80px] w-96 h-24 bg-white/15 rounded-full blur-2xl" />
-          {/* mid clouds */}
-          <div className="absolute top-[28%] -left-8 w-56 h-14 bg-white/22 rounded-full blur-xl" />
-          <div className="absolute top-[22%] right-[5%] w-48 h-12 bg-white/18 rounded-full blur-xl" />
-          <div className="absolute top-[40%] left-[30%] w-40 h-10 bg-white/12 rounded-full blur-xl" />
-          {/* foreground wispy clouds near horizon */}
-          <div className="absolute bottom-8 -left-10 w-72 h-16 bg-white/25 rounded-full blur-2xl" />
-          <div className="absolute bottom-4 right-[-20px] w-80 h-14 bg-white/20 rounded-full blur-2xl" />
-          <div className="absolute bottom-12 left-[35%] w-52 h-10 bg-white/15 rounded-full blur-xl" />
+          {/* Moon glow — top right, very soft */}
+          <div className="absolute top-[-50px] right-[18%] w-52 h-52 rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(255,252,220,0.12) 0%, transparent 70%)" }} />
+          <div className="absolute top-[0px] right-[21%] w-28 h-28 rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(255,250,200,0.18) 0%, transparent 65%)" }} />
 
-          {/* ── Light rays from top ── */}
-          <div className="absolute top-0 left-[30%] w-1 h-full bg-white/5 blur-sm rotate-6" />
-          <div className="absolute top-0 left-[50%] w-2 h-full bg-white/4 blur-sm -rotate-3" />
-          <div className="absolute top-0 left-[65%] w-1 h-full bg-white/4 blur-sm rotate-12" />
+          {/* Dreamy cloud wisps — very low opacity */}
+          <div className="absolute top-[12%] -left-8 w-80 h-14 bg-white/6 rounded-full blur-2xl pointer-events-none" />
+          <div className="absolute top-[20%] right-[-60px] w-96 h-16 bg-white/5 rounded-full blur-2xl pointer-events-none" />
+          <div className="absolute top-[48%] left-[8%] w-56 h-10 bg-white/5 rounded-full blur-xl pointer-events-none" />
+          <div className="absolute bottom-[14%] left-[-20px] w-72 h-12 bg-white/7 rounded-full blur-2xl pointer-events-none" />
+          <div className="absolute bottom-[8%] right-[-30px] w-64 h-10 bg-white/6 rounded-full blur-2xl pointer-events-none" />
 
-          {/* ── Stars — one per post ── */}
+          {/* Horizon glow */}
+          <div className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none" style={{ background: "linear-gradient(to top, rgba(200,210,240,0.18), transparent)" }} />
+
+          {/* Stars — one per post, warm colours */}
           <StarrySky count={posts.length} />
 
-          <div className="relative z-10 text-center space-y-6 max-w-xl drop-shadow-lg">
-            <h2 className="text-4xl md:text-5xl [font-family:var(--font-headline)] font-extrabold text-white leading-tight" style={{ textShadow: '0 2px 16px rgba(30,80,180,0.4)' }}>
+          <div className="relative z-10 text-center space-y-5 max-w-xl">
+            <h2 className="text-4xl md:text-5xl [font-family:var(--font-headline)] font-extrabold text-white/90 leading-tight" style={{ textShadow: "0 2px 24px rgba(80,60,160,0.5)" }}>
               ความรู้สึกของคุณ
               <br />
               เปรียบดั่งดวงดาว
             </h2>
-            <p className="text-white/85 text-lg font-light leading-relaxed" style={{ textShadow: '0 1px 8px rgba(30,80,180,0.3)' }}>
+            <p className="text-white/60 text-lg font-light leading-relaxed" style={{ textShadow: "0 1px 12px rgba(60,40,120,0.4)" }}>
               พื้นที่ปลอดภัยที่คุณสามารถปลดปล่อยความในใจ
               <br />
               ท่ามกลางหมู่ดาวที่พร้อมรับฟัง

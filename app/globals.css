@@ -5,7 +5,16 @@
 }
 
 .sky-gradient {
-  background: linear-gradient(180deg, #3d80d8 0%, #a0cef8 100%);
+  background: linear-gradient(180deg,
+    #1e1a50 0%,
+    #342d78 22%,
+    #5548a0 42%,
+    #8070b8 60%,
+    #a89cc8 75%,
+    #c0bcd8 85%,
+    #ccd4ec 93%,
+    #d4e4f8 100%
+  );
 }
 
 .glass-card {

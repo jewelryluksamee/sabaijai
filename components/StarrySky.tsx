@@ -8,11 +8,12 @@ function starProps(index: number) {
   const b = (index * 1234567891) >>> 0;
   const c = (index * 987654323)  >>> 0;
 
-  const colorType = c % 5;
+  const colorType = c % 4;
   const color =
-    colorType === 0 ? "rgba(255,248,190,0.95)" :   // warm gold
-    colorType === 1 ? "rgba(190,220,255,0.95)" :   // ice blue
-                      "rgba(255,255,255,0.90)";    // pure white
+    colorType === 0 ? "rgba(255,248,190,0.90)" :   // warm butter yellow
+    colorType === 1 ? "rgba(255,252,220,0.88)" :   // off-white warm
+    colorType === 2 ? "rgba(255,240,200,0.85)" :   // soft amber
+                      "rgba(255,255,238,0.82)";    // creamy white
 
   return {
     x:        (a % 82) + 5,
