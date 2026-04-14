@@ -4,7 +4,7 @@ import BottomNav from "@/components/BottomNav";
 const feedItems = [
   {
     sharedBy: "Emily",
-    byColor: "text-[#22648e]",
+    byColor: "text-[#8a7a50]",
     title: "Rainy Night in Paris",
     caption:
       "This always helps me ground myself when things feel a bit too loud. Close your eyes and listen to the raindrops.",
@@ -16,7 +16,7 @@ const feedItems = [
   },
   {
     sharedBy: "Marcus",
-    byColor: "text-[#3c6942]",
+    byColor: "text-[#4a6b45]",
     title: "Deep Ocean Whispers",
     caption:
       "Found this gem today. It's like a warm hug for your ears. Highly recommend for evening meditation.",
@@ -28,7 +28,7 @@ const feedItems = [
   },
   {
     sharedBy: "Sarah",
-    byColor: "text-[#5c4981]",
+    byColor: "text-[#3d6b4e]",
     title: "Acoustic Dreams Vol. 2",
     caption: "Gentle strings for a gentle heart.",
     time: "1h ago",
@@ -48,10 +48,10 @@ export default function MusicPage() {
         <section className="mb-12">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
-              <span className="inline-block px-4 py-1 rounded-full bg-[#bdefbe] text-[#2f5b36] text-xs font-semibold mb-4 tracking-wider uppercase">
+              <span className="inline-block px-4 py-1 rounded-full bg-[#d4e8c8] text-[#2a4d32] text-xs font-semibold mb-4 tracking-wider uppercase">
                 Active Session
               </span>
-              <h2 className="text-4xl md:text-5xl font-[var(--font-headline)] font-extrabold text-[#353136] leading-tight">
+              <h2 className="text-4xl md:text-5xl font-[var(--font-headline)] font-extrabold text-[#332b1f] leading-tight">
                 Listening to music together for comfort
               </h2>
             </div>
@@ -63,12 +63,12 @@ export default function MusicPage() {
               ].map((src, i) => (
                 <img
                   key={i}
-                  className="w-12 h-12 rounded-full border-4 border-[#fef8fb] object-cover"
+                  className="w-12 h-12 rounded-full border-4 border-[#fdf8ef] object-cover"
                   src={src}
                   alt="Listener"
                 />
               ))}
-              <div className="w-12 h-12 rounded-full border-4 border-[#fef8fb] bg-[#d6beff] flex items-center justify-center text-[#4b386e] text-xs font-bold font-[var(--font-headline)]">
+              <div className="w-12 h-12 rounded-full border-4 border-[#fdf8ef] bg-[#c2e3c8] flex items-center justify-center text-[#1a3d25] text-xs font-bold font-[var(--font-headline)]">
                 +12
               </div>
             </div>
@@ -78,9 +78,9 @@ export default function MusicPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Left: Share Input */}
           <div className="lg:col-span-5 flex flex-col gap-8">
-            <div className="bg-[#f8f2f6] rounded-xl p-8 relative overflow-hidden grainy-texture">
+            <div className="bg-[#f5eed8] rounded-xl p-8 relative overflow-hidden grainy-texture">
               <div className="relative z-10">
-                <label className="block text-[#69558e] font-[var(--font-headline)] font-semibold mb-4">
+                <label className="block text-[#4e7c5f] font-[var(--font-headline)] font-semibold mb-4">
                   Share a Healing Note
                 </label>
 
@@ -89,10 +89,10 @@ export default function MusicPage() {
                   <input
                     type="text"
                     placeholder="Paste YouTube link here..."
-                    className="w-full bg-[#ede6eb] rounded-lg px-5 py-4 text-[#353136] placeholder-[#625e63]/50 border-none outline-none focus:ring-2 focus:ring-[#69558e]/20 transition-all"
+                    className="w-full bg-[#e8dfc6] rounded-lg px-5 py-4 text-[#332b1f] placeholder-[#6b5e4d]/50 border-none outline-none focus:ring-2 focus:ring-[#4e7c5f]/20 transition-all"
                   />
                   <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                    <span className="material-symbols-outlined text-[#69558e]/40">
+                    <span className="material-symbols-outlined text-[#4e7c5f]/40">
                       link
                     </span>
                   </div>
@@ -115,20 +115,20 @@ export default function MusicPage() {
                     </div>
                   </div>
                   <div className="p-5">
-                    <h4 className="font-[var(--font-headline)] font-bold text-lg text-[#353136] mb-1">
+                    <h4 className="font-[var(--font-headline)] font-bold text-lg text-[#332b1f] mb-1">
                       Morning Serenity - Lo-fi Chill
                     </h4>
-                    <p className="text-[#625e63] text-sm">YouTube • 3:45</p>
+                    <p className="text-[#6b5e4d] text-sm">YouTube • 3:45</p>
                   </div>
                 </div>
 
                 <textarea
-                  className="w-full bg-[#ede6eb] rounded-lg px-5 py-4 text-[#353136] placeholder-[#625e63]/50 border-none outline-none focus:ring-2 focus:ring-[#69558e]/20 transition-all resize-none mb-6"
+                  className="w-full bg-[#e8dfc6] rounded-lg px-5 py-4 text-[#332b1f] placeholder-[#6b5e4d]/50 border-none outline-none focus:ring-2 focus:ring-[#4e7c5f]/20 transition-all resize-none mb-6"
                   placeholder="Write a Healing Caption... How does this song make you feel?"
                   rows={4}
                 />
 
-                <button className="w-full h-14 bg-gradient-to-r from-[#69558e] to-[#5c4981] text-[#fef7ff] rounded-xl font-[var(--font-headline)] font-bold text-lg shadow-lg hover:opacity-90 transition-all flex items-center justify-center gap-2">
+                <button className="w-full h-14 bg-gradient-to-r from-[#4e7c5f] to-[#3d6b4e] text-[#f4faf6] rounded-xl font-[var(--font-headline)] font-bold text-lg shadow-lg hover:opacity-90 transition-all flex items-center justify-center gap-2">
                   <span>Share with the group</span>
                   <span className="material-symbols-outlined">send</span>
                 </button>
@@ -139,14 +139,14 @@ export default function MusicPage() {
           {/* Right: Feed */}
           <div className="lg:col-span-7">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-[var(--font-headline)] font-bold text-[#353136]">
+              <h3 className="text-xl font-[var(--font-headline)] font-bold text-[#332b1f]">
                 Shared for Comfort
               </h3>
               <div className="flex gap-2">
-                <span className="px-3 py-1 rounded-full bg-[#f3ecf1] text-[#625e63] text-xs font-medium">
+                <span className="px-3 py-1 rounded-full bg-[#efe7ce] text-[#6b5e4d] text-xs font-medium">
                   Newest
                 </span>
-                <span className="px-3 py-1 rounded-full bg-[#69558e]/10 text-[#69558e] text-xs font-medium">
+                <span className="px-3 py-1 rounded-full bg-[#4e7c5f]/10 text-[#4e7c5f] text-xs font-medium">
                   Most Liked
                 </span>
               </div>
@@ -156,7 +156,7 @@ export default function MusicPage() {
               {feedItems.map((item) => (
                 <div
                   key={item.title}
-                  className="group bg-[#f8f2f6] hover:bg-[#ede6eb] transition-all rounded-xl p-6 flex flex-col md:flex-row gap-6"
+                  className="group bg-[#f5eed8] hover:bg-[#e8dfc6] transition-all rounded-xl p-6 flex flex-col md:flex-row gap-6"
                 >
                   <div className="w-full md:w-32 h-32 flex-shrink-0 rounded-lg overflow-hidden relative">
                     <img
@@ -178,19 +178,19 @@ export default function MusicPage() {
                         >
                           Shared by {item.sharedBy}
                         </p>
-                        <h4 className="font-[var(--font-headline)] font-bold text-lg leading-tight text-[#353136]">
+                        <h4 className="font-[var(--font-headline)] font-bold text-lg leading-tight text-[#332b1f]">
                           {item.title}
                         </h4>
                       </div>
-                      <span className="text-[10px] text-[#625e63] font-medium">
+                      <span className="text-[10px] text-[#6b5e4d] font-medium">
                         {item.time}
                       </span>
                     </div>
-                    <p className="text-[#625e63] text-sm leading-relaxed mb-4 italic">
+                    <p className="text-[#6b5e4d] text-sm leading-relaxed mb-4 italic">
                       "{item.caption}"
                     </p>
                     <div className="flex items-center gap-4">
-                      <button className="flex items-center gap-1.5 text-xs font-medium text-[#625e63] hover:text-[#a8364b] transition-colors">
+                      <button className="flex items-center gap-1.5 text-xs font-medium text-[#6b5e4d] hover:text-[#a8364b] transition-colors">
                         <span
                           className="material-symbols-outlined text-lg"
                           style={
@@ -205,7 +205,7 @@ export default function MusicPage() {
                           {item.likes}
                         </span>
                       </button>
-                      <button className="flex items-center gap-1.5 text-xs font-medium text-[#625e63] hover:text-[#69558e] transition-colors">
+                      <button className="flex items-center gap-1.5 text-xs font-medium text-[#6b5e4d] hover:text-[#4e7c5f] transition-colors">
                         <span className="material-symbols-outlined text-lg">
                           chat_bubble
                         </span>

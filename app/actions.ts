@@ -5,18 +5,32 @@ import { revalidatePath } from "next/cache";
 import { FieldValue } from "firebase-admin/firestore";
 
 export type MoodColor =
-  | "yellow"
-  | "blue"
   | "red"
+  | "orange"
+  | "yellow"
+  | "lime"
+  | "green"
+  | "teal"
+  | "cyan"
+  | "blue"
+  | "indigo"
   | "purple"
-  | "green";
+  | "pink"
+  | "gray";
 
 const moodLabels: Record<MoodColor, string> = {
-  yellow: "สุขใจ",
-  blue: "เศร้า",
-  red: "โกรธ",
-  purple: "สับสน",
-  green: "สบายใจ",
+  red:    "แดง",
+  orange: "ส้ม",
+  yellow: "เหลือง",
+  lime:   "เขียวมะนาว",
+  green:  "เขียว",
+  teal:   "เขียวอมฟ้า",
+  cyan:   "ฟ้าอมเขียว",
+  blue:   "น้ำเงิน",
+  indigo: "คราม",
+  purple: "ม่วง",
+  pink:   "ชมพู",
+  gray:   "เทา",
 };
 
 export async function submitPost(formData: FormData) {

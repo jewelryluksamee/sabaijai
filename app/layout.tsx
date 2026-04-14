@@ -35,7 +35,7 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
         />
       </head>
-      <body className="bg-[#fef8fb] text-[#353136] font-[var(--font-body)] antialiased min-h-screen">
+      <body className="bg-[#fdf8ef] text-[#332b1f] font-[var(--font-body)] antialiased min-h-screen">
         {children}
       </body>
     </html>
