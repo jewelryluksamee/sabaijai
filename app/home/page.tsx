@@ -15,18 +15,18 @@ type Post = {
 };
 
 const moodPalette: Record<string, { blob: string; dot: string }> = {
-  red:    { blob: "rgba(232,93,74,0.12)",   dot: "#e85d4a" },
-  orange: { blob: "rgba(240,136,58,0.12)",  dot: "#f0883a" },
-  yellow: { blob: "rgba(240,200,50,0.12)",  dot: "#f0c832" },
-  lime:   { blob: "rgba(126,208,64,0.12)",  dot: "#7ed040" },
-  green:  { blob: "rgba(56,184,106,0.12)",  dot: "#38b86a" },
-  teal:   { blob: "rgba(32,184,168,0.12)",  dot: "#20b8a8" },
-  cyan:   { blob: "rgba(32,168,216,0.12)",  dot: "#20a8d8" },
-  blue:   { blob: "rgba(56,128,232,0.12)",  dot: "#3880e8" },
-  indigo: { blob: "rgba(88,88,216,0.12)",   dot: "#5858d8" },
-  purple: { blob: "rgba(144,72,208,0.12)",  dot: "#9048d0" },
-  pink:   { blob: "rgba(224,80,160,0.12)",  dot: "#e050a0" },
-  gray:   { blob: "rgba(144,144,144,0.12)", dot: "#909090" },
+  red:    { blob: "rgba(232,93,74,0.18)",   dot: "#e85d4a" },
+  orange: { blob: "rgba(240,136,58,0.18)",  dot: "#f0883a" },
+  yellow: { blob: "rgba(240,200,50,0.18)",  dot: "#f0c832" },
+  lime:   { blob: "rgba(126,208,64,0.18)",  dot: "#7ed040" },
+  green:  { blob: "rgba(56,184,106,0.18)",  dot: "#38b86a" },
+  teal:   { blob: "rgba(32,184,168,0.18)",  dot: "#20b8a8" },
+  cyan:   { blob: "rgba(32,168,216,0.18)",  dot: "#20a8d8" },
+  blue:   { blob: "rgba(56,128,232,0.18)",  dot: "#3880e8" },
+  indigo: { blob: "rgba(88,88,216,0.18)",   dot: "#5858d8" },
+  purple: { blob: "rgba(144,72,208,0.18)",  dot: "#9048d0" },
+  pink:   { blob: "rgba(224,80,160,0.18)",  dot: "#e050a0" },
+  gray:   { blob: "rgba(144,144,144,0.18)", dot: "#909090" },
 };
 
 function timeAgo(iso: string): string {
@@ -89,14 +89,10 @@ export default async function HomePage() {
 
           <div className="relative z-10 text-center space-y-5 max-w-xl">
             <h2 className="text-4xl md:text-5xl [font-family:var(--font-headline)] font-extrabold text-white/90 leading-tight" style={{ textShadow: "0 2px 24px rgba(80,60,160,0.5)" }}>
-              ความรู้สึกของคุณ
-              <br />
-              เปรียบดั่งดวงดาว
+              you're not alone
             </h2>
             <p className="text-white/60 text-lg font-light leading-relaxed" style={{ textShadow: "0 1px 12px rgba(60,40,120,0.4)" }}>
-              พื้นที่ปลอดภัยที่คุณสามารถปลดปล่อยความในใจ
-              <br />
-              ท่ามกลางหมู่ดาวที่พร้อมรับฟัง
+              ที่แห่งนี้ ยังคงมีเหล่าดวงดาวที่อยู่เคียงข้าง <br/> ในทุกความรู้สึกของคุณเสมอ 𖤐
             </p>
           </div>
         </section>
@@ -134,7 +130,7 @@ export default async function HomePage() {
               return (
                 <div
                   key={post.id}
-                  className="bg-[#f5eed8] rounded-xl p-8 space-y-6 relative overflow-hidden group"
+                  className="bg-white rounded-xl p-8 space-y-6 relative overflow-hidden group shadow-[0_2px_20px_rgba(0,0,0,0.06)]"
                 >
                   <div
                     className="absolute top-0 right-0 w-24 h-24 rounded-bl-[100%] transition-all group-hover:scale-110"

@@ -77,19 +77,6 @@ export default function LoginPage() {
             {/* Google Login */}
             <GoogleSignIn />
           </div>
-
-          {/* Footer */}
-          <div className="text-center space-y-6">
-            <p className="text-sm text-[#6b5e4d]">
-              ยังไม่มีบัญชี?{" "}
-              <a href="#" className="text-[#4e7c5f] font-bold hover:underline">
-                สมัครสมาชิก
-              </a>
-            </p>
-            <p className="text-[10px] leading-relaxed text-[#9a8b7a]/60 uppercase tracking-widest px-8">
-              การเข้าสู่ระบบแสดงว่าคุณยอมรับข้อตกลงและนโยบายความเป็นส่วนตัวของเรา
-            </p>
-          </div>
         </div>
       </section>
     </main>
