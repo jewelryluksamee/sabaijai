@@ -3,6 +3,15 @@
 import { useRef, useState } from "react";
 import { submitPost, type MoodColor } from "@/app/actions";
 
+// Placeholder responses — swap out when API is ready
+const AI_RESPONSES = [
+  "เรารับรู้ถึงความเหนื่อยล้าของคุณนะ การใจดีกับตัวเองบ้างก็เป็นเรื่องที่สำคัญพอๆ กับการใจดีกับคนอื่นเลย วันนี้คุณเก่งมากแล้วที่ผ่านมันมาได้ พักผ่อนให้เต็มที่นะ",
+  "ขอบคุณที่เล่าให้ฟังนะ ความรู้สึกของคุณมีความหมายเสมอ ไม่ว่าจะดีหรือไม่ดี แค่ได้ระบายออกมาก็ช่วยได้มากเลย",
+  "วันนี้อาจจะหนักหน่อย แต่คุณมาถึงตรงนี้ได้แล้ว นั่นคือความกล้าหาญอย่างหนึ่งนะ อยู่เคียงข้างคุณเสมอ",
+  "ทุกความรู้สึกล้วนมีเหตุผล อย่าโกรธตัวเองที่รู้สึกแบบนี้นะ ให้เวลาตัวเองบ้าง แล้วทุกอย่างจะค่อยๆ ดีขึ้นเอง",
+  "ได้ยินคุณอยู่นะ บางวันแค่ลุกขึ้นมาก็เป็นความสำเร็จแล้ว คุณทำได้ดีมากเลย",
+];
+
 const moods: { value: MoodColor; hex: string }[] = [
   { value: "red",    hex: "#e85d4a" },
   { value: "orange", hex: "#f0883a" },
@@ -32,6 +41,12 @@ export default function MoodEntryForm() {
     setPending(false);
     setSelectedMood(null);
     formRef.current?.reset();
+
+    // Signal feed card to start listening, then reveal response
+    window.dispatchEvent(new CustomEvent("aiListening"));
+    await new Promise((r) => setTimeout(r, 1200));
+    const text = AI_RESPONSES[Math.floor(Math.random() * AI_RESPONSES.length)];
+    window.dispatchEvent(new CustomEvent("aiResponse", { detail: { text } }));
   }
 
   return (
@@ -63,7 +78,6 @@ export default function MoodEntryForm() {
               />
             ))}
           </div>
-
         </div>
 
         {/* Optional text */}

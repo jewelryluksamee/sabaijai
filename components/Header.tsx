@@ -8,7 +8,7 @@ export default function Header() {
         <span className="material-symbols-outlined text-[#4e7c5f] text-2xl">
           bubble_chart
         </span>
-        <h1 className="text-2xl font-bold text-[#4e7c5f] [font-family:var(--font-headline)] tracking-tight">
+        <h1 className="text-2xl font-bold text-[#4e7c5f] [font-family:var(--font-display)] tracking-tight">
           Sabaijai
         </h1>
       </div>

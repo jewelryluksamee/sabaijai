@@ -88,10 +88,10 @@ export default async function HomePage() {
           <StarrySky count={posts.length} />
 
           <div className="relative z-10 text-center space-y-5 max-w-xl">
-            <h2 className="text-4xl md:text-5xl [font-family:var(--font-headline)] font-extrabold text-white/90 leading-tight" style={{ textShadow: "0 2px 24px rgba(80,60,160,0.5)" }}>
+            <h2 className="text-5xl md:text-6xl [font-family:var(--font-display)] font-bold text-white/90 leading-tight drop-shadow-lg" style={{ textShadow: "0 2px 24px rgba(80,60,160,0.5)" }}>
               you're not alone
             </h2>
-            <p className="text-white/60 text-lg font-light leading-relaxed" style={{ textShadow: "0 1px 12px rgba(60,40,120,0.4)" }}>
+            <p className="text-white/60 text-xl [font-family:var(--font-handwriting)] leading-relaxed" style={{ textShadow: "0 1px 12px rgba(60,40,120,0.4)" }}>
               ที่แห่งนี้ ยังคงมีเหล่าดวงดาวที่อยู่เคียงข้าง <br/> ในทุกความรู้สึกของคุณเสมอ 𖤐
             </p>
           </div>
@@ -148,7 +148,29 @@ export default async function HomePage() {
                   <p className="text-lg leading-relaxed text-[#332b1f] font-light">
                     &ldquo;{post.content}&rdquo;
                   </p>
-                  <CandleButton postId={post.id} initialCount={post.candles} />
+
+                  {/* AI response sub-section — tinted with the post's mood colour */}
+                  <div
+                    className="rounded-2xl px-5 py-4 space-y-3"
+                    style={{ background: colors.blob.replace("0.18", "0.18") }}
+                  >
+                    <p className="text-sm font-semibold flex items-center gap-2" style={{ color: colors.dot + "bb" }}>
+                      <span
+                        className="w-7 h-7 rounded-full flex items-center justify-center text-base shrink-0"
+                        style={{ background: colors.blob.replace("0.18", "0.28") }}
+                      >
+                        🤖
+                      </span>
+                      ข้อความจากใจ Sabaijai:
+                    </p>
+                    <p className="text-sm leading-relaxed text-[#332b1f] font-light pl-9 opacity-40 italic">
+                      กำลังรับฟัง... {/* replace with API response */}
+                    </p>
+                  </div>
+
+                  <div className="flex justify-end">
+                    <CandleButton postId={post.id} initialCount={post.candles} />
+                  </div>
                 </div>
               );
             })}

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, Be_Vietnam_Pro } from "next/font/google";
+import { Plus_Jakarta_Sans, Be_Vietnam_Pro, Itim, Mali } from "next/font/google";
 import "./globals.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -12,6 +12,19 @@ const beVietnamPro = Be_Vietnam_Pro({
   subsets: ["latin"],
   variable: "--font-body",
   weight: ["300", "400", "500", "600"],
+});
+
+const itim = Itim({
+  subsets: ["latin", "thai"],
+  variable: "--font-handwriting",
+  weight: "400",
+});
+
+const mali = Mali({
+  subsets: ["latin", "thai"],
+  variable: "--font-display",
+  weight: ["400", "600", "700"],
+  style: ["normal", "italic"],
 });
 
 export const metadata: Metadata = {
@@ -27,7 +40,7 @@ export default function RootLayout({
   return (
     <html
       lang="th"
-      className={`${plusJakartaSans.variable} ${beVietnamPro.variable}`}
+      className={`${plusJakartaSans.variable} ${beVietnamPro.variable} ${itim.variable} ${mali.variable}`}
     >
       <head>
         <link
