@@ -117,7 +117,7 @@ export default async function HomePage() {
           <FlyingImages />
 
           <div className="relative z-10 text-center space-y-5 max-w-xl">
-            <h2 className="text-2xl md:text-6xl [font-family:var(--font-display)] font-bold text-white/90 leading-tight drop-shadow-lg" style={{ textShadow: "0 2px 24px rgba(80,60,160,0.5)" }}>
+            <h2 className="text-2xl md:text-4xl [font-family:var(--font-display)] font-bold text-white/90 leading-tight drop-shadow-lg" style={{ textShadow: "0 2px 24px rgba(80,60,160,0.5)" }}>
               คุณไม่ได้อยู่คนเดียวนะ🌟
             </h2>
             <p className="text-white/60 text-lg [font-family:var(--font-display)] leading-relaxed" style={{ textShadow: "0 1px 12px rgba(60,40,120,0.4)" }}>

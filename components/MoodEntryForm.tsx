@@ -24,24 +24,36 @@ export default function MoodEntryForm() {
   const [selectedMood, setSelectedMood] = useState<MoodColor | null>(null);
   const [pending, setPending] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
+  const isSubmittingRef = useRef(false);
 
-  async function handleSubmit(formData: FormData) {
-    if (!selectedMood) return;
-    formData.set("mood", selectedMood);
+  async function handleFormSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (isSubmittingRef.current || !selectedMood) return;
+
+    isSubmittingRef.current = true;
     setPending(true);
-    window.dispatchEvent(new CustomEvent("aiListening"));
-    const { aiText } = await submitPost(formData);
-    window.dispatchEvent(new CustomEvent("newPost"));
-    setPending(false);
-    setSelectedMood(null);
-    formRef.current?.reset();
+    
+    try {
+      const formData = new FormData(e.currentTarget);
+      formData.set("mood", selectedMood);
 
-    const text = aiText || "ขอบคุณที่เล่าให้ฟังนะ อยู่เคียงข้างคุณเสมอเลย 🌟";
-    window.dispatchEvent(new CustomEvent("aiResponse", { detail: { text } }));
+      window.dispatchEvent(new CustomEvent("aiListening"));
+      const { aiText } = await submitPost(formData);
+      window.dispatchEvent(new CustomEvent("newPost"));
+      
+      setSelectedMood(null);
+      formRef.current?.reset();
+
+      const text = aiText || "ขอบคุณที่เล่าให้ฟังนะ อยู่เคียงข้างคุณเสมอเลย 🌟";
+      window.dispatchEvent(new CustomEvent("aiResponse", { detail: { text } }));
+    } finally {
+      isSubmittingRef.current = false;
+      setPending(false);
+    }
   }
 
   return (
-    <form ref={formRef} action={handleSubmit}>
+    <form ref={formRef} onSubmit={handleFormSubmit}>
       <div className="flex flex-col gap-5">
 
         {/* Colour picker */}
