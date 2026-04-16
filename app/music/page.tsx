@@ -1,21 +1,32 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import {
+  collection,
+  addDoc,
+  onSnapshot,
+  doc,
+  updateDoc,
+  increment,
+  orderBy,
+  query,
+  serverTimestamp,
+  Timestamp,
+} from "firebase/firestore";
+import { db } from "@/lib/firebase-client";
 import Header from "@/components/Header";
 import BottomNav from "@/components/BottomNav";
 
 interface FeedItem {
-  id: number;
+  id: string;
   title: string;
   img: string;
   caption: string;
-  time: string;
+  createdAt: Timestamp | null;
   likes: number;
   liked: boolean;
   youtubeId: string | null;
 }
-
-const initialFeed: FeedItem[] = [];
 
 function extractYouTubeId(url: string): string | null {
   const match = url.match(
@@ -24,18 +35,46 @@ function extractYouTubeId(url: string): string | null {
   return match ? match[1] : null;
 }
 
+function timeAgo(ts: Timestamp | null): string {
+  if (!ts) return "just now";
+  const diff = (Date.now() - ts.toMillis()) / 1000;
+  if (diff < 60) return "just now";
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  return `${Math.floor(diff / 86400)}d ago`;
+}
+
 interface VideoPreview {
   title: string;
   thumbnail: string;
   videoId: string;
 }
 
+const COLLECTION = "music_feed";
+
 export default function MusicPage() {
   const [url, setUrl] = useState("");
   const [caption, setCaption] = useState("");
   const [preview, setPreview] = useState<VideoPreview | null>(null);
   const [loadingPreview, setLoadingPreview] = useState(false);
-  const [feed, setFeed] = useState<FeedItem[]>(initialFeed);
+  const [feed, setFeed] = useState<FeedItem[]>([]);
+  const [likedIds, setLikedIds] = useState<Set<string>>(new Set());
+  const [sharing, setSharing] = useState(false);
+
+  // Real-time listener
+  useEffect(() => {
+    const q = query(collection(db, COLLECTION), orderBy("createdAt", "desc"));
+    const unsub = onSnapshot(q, (snap) => {
+      setFeed(
+        snap.docs.map((d) => ({
+          id: d.id,
+          ...(d.data() as Omit<FeedItem, "id" | "liked">),
+          liked: false,
+        }))
+      );
+    });
+    return unsub;
+  }, []);
 
   const fetchPreview = useCallback(async (videoId: string) => {
     setLoadingPreview(true);
@@ -66,36 +105,36 @@ export default function MusicPage() {
     fetchPreview(videoId);
   }, [url, fetchPreview]);
 
-  function handleShare() {
-    if (!preview) return;
-    const newItem: FeedItem = {
-      id: Date.now(),
-      title: preview.title,
-      img: preview.thumbnail,
-      caption: caption.trim(),
-      time: "just now",
-      likes: 0,
-      liked: false,
-      youtubeId: preview.videoId,
-    };
-    setFeed((prev) => [newItem, ...prev]);
-    setUrl("");
-    setCaption("");
-    setPreview(null);
+  async function handleShare() {
+    if (!preview || sharing) return;
+    setSharing(true);
+    try {
+      await addDoc(collection(db, COLLECTION), {
+        title: preview.title,
+        img: preview.thumbnail,
+        caption: caption.trim(),
+        youtubeId: preview.videoId,
+        likes: 0,
+        createdAt: serverTimestamp(),
+      });
+      setUrl("");
+      setCaption("");
+      setPreview(null);
+    } finally {
+      setSharing(false);
+    }
   }
 
-  function handleLike(id: number) {
-    setFeed((prev) =>
-      prev.map((item) =>
-        item.id === id
-          ? {
-              ...item,
-              liked: !item.liked,
-              likes: item.liked ? item.likes - 1 : item.likes + 1,
-            }
-          : item
-      )
-    );
+  async function handleLike(id: string) {
+    const alreadyLiked = likedIds.has(id);
+    setLikedIds((prev) => {
+      const next = new Set(prev);
+      if (alreadyLiked) { next.delete(id); } else { next.add(id); }
+      return next;
+    });
+    await updateDoc(doc(db, COLLECTION, id), {
+      likes: increment(alreadyLiked ? -1 : 1),
+    });
   }
 
   return (
@@ -194,10 +233,10 @@ export default function MusicPage() {
 
               <button
                 onClick={handleShare}
-                disabled={!preview}
+                disabled={!preview || sharing}
                 className="w-full h-14 border border-black/40 bg-[#7c5cbf] hover:bg-[#6b4aad] text-white rounded-xl text-base font-bold shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                <span>Share to Community</span>
+                <span>{sharing ? "Sharing..." : "Share to Community"}</span>
                 <span className="material-symbols-outlined">send</span>
               </button>
             </div>
@@ -217,81 +256,84 @@ export default function MusicPage() {
             )}
 
             <div className="space-y-4">
-              {feed.map((item) => (
-                <div
-                  key={item.id}
-                  className="bg-white/40 hover:bg-white/60 backdrop-blur-md border border-black transition-all rounded-2xl p-5 flex gap-5"
-                >
-                  <div className="w-28 h-28 shrink-0 rounded-xl overflow-hidden relative border border-black">
-                    {item.youtubeId ? (
-                      <a
-                        href={`https://www.youtube.com/watch?v=${item.youtubeId}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="block w-full h-full"
-                      >
-                        <img
-                          className="w-full h-full object-cover"
-                          src={item.img}
-                          alt={item.title}
-                        />
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/30 transition-colors">
-                          <span className="material-symbols-outlined text-white/90">
-                            play_arrow
-                          </span>
-                        </div>
-                      </a>
-                    ) : (
-                      <>
-                        <img
-                          className="w-full h-full object-cover"
-                          src={item.img}
-                          alt={item.title}
-                        />
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/10">
-                          <span className="material-symbols-outlined text-white/80">
-                            music_note
-                          </span>
-                        </div>
-                      </>
-                    )}
-                  </div>
-
-                  <div className="grow min-w-0">
-                    <div className="flex justify-between items-start mb-2">
-                      <h4 className="font-bold text-[#332b1f] leading-snug pr-3 line-clamp-2">
-                        {item.title}
-                      </h4>
-                      <span className="text-[10px] text-[#6b5e4d] shrink-0">
-                        {item.time}
-                      </span>
+              {feed.map((item) => {
+                const liked = likedIds.has(item.id);
+                return (
+                  <div
+                    key={item.id}
+                    className="bg-white/40 hover:bg-white/60 backdrop-blur-md border border-black transition-all rounded-2xl p-5 flex gap-5"
+                  >
+                    <div className="w-28 h-28 shrink-0 rounded-xl overflow-hidden relative border border-black">
+                      {item.youtubeId ? (
+                        <a
+                          href={`https://www.youtube.com/watch?v=${item.youtubeId}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block w-full h-full"
+                        >
+                          <img
+                            className="w-full h-full object-cover"
+                            src={item.img}
+                            alt={item.title}
+                          />
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/30 transition-colors">
+                            <span className="material-symbols-outlined text-white/90">
+                              play_arrow
+                            </span>
+                          </div>
+                        </a>
+                      ) : (
+                        <>
+                          <img
+                            className="w-full h-full object-cover"
+                            src={item.img}
+                            alt={item.title}
+                          />
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/10">
+                            <span className="material-symbols-outlined text-white/80">
+                              music_note
+                            </span>
+                          </div>
+                        </>
+                      )}
                     </div>
-                    {item.caption && (
-                      <p className="text-[#6b5e4d] text-sm leading-relaxed mb-3 italic line-clamp-2">
-                        "{item.caption}"
-                      </p>
-                    )}
-                    <button
-                      onClick={() => handleLike(item.id)}
-                      className="flex items-center gap-1.5 text-xs font-medium text-[#6b5e4d] hover:text-[#a8364b] transition-colors"
-                    >
-                      <span
-                        className="material-symbols-outlined text-lg"
-                        style={
-                          item.liked
-                            ? { fontVariationSettings: "'FILL' 1", color: "#a8364b" }
-                            : undefined
-                        }
+
+                    <div className="grow min-w-0">
+                      <div className="flex justify-between items-start mb-2">
+                        <h4 className="font-bold text-[#332b1f] leading-snug pr-3 line-clamp-2">
+                          {item.title}
+                        </h4>
+                        <span className="text-[10px] text-[#6b5e4d] shrink-0">
+                          {timeAgo(item.createdAt)}
+                        </span>
+                      </div>
+                      {item.caption && (
+                        <p className="text-[#6b5e4d] text-sm leading-relaxed mb-3 italic line-clamp-2">
+                          &ldquo;{item.caption}&rdquo;
+                        </p>
+                      )}
+                      <button
+                        onClick={() => handleLike(item.id)}
+                        className="flex items-center gap-1.5 text-xs font-medium text-[#6b5e4d] hover:text-[#a8364b] transition-colors"
                       >
-                        favorite
-                      </span>
-                      <span className={item.liked ? "text-[#a8364b]" : ""}>
-                        {item.likes}
-                      </span>
-                    </button>
+                        <span
+                          className="material-symbols-outlined text-lg"
+                          style={
+                            liked
+                              ? { fontVariationSettings: "'FILL' 1", color: "#a8364b" }
+                              : undefined
+                          }
+                        >
+                          favorite
+                        </span>
+                        <span className={liked ? "text-[#a8364b]" : ""}>
+                          {item.likes}
+                        </span>
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
