@@ -11,9 +11,6 @@ export default function Header() {
         </h1>
       </div>
       <div className="flex items-center gap-4">
-        <button className="w-10 h-10 flex items-center justify-center rounded-full bg-[#4e7c5f]/10 text-[#4e7c5f] hover:opacity-80 transition-opacity">
-          <span className="material-symbols-outlined">notifications</span>
-        </button>
         <SignOutButton />
       </div>
     </header>

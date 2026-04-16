@@ -112,11 +112,11 @@ export default async function HomePage() {
           <StarrySky count={posts.length} />
 
           <div className="relative z-10 text-center space-y-5 max-w-xl">
-            <h2 className="text-5xl md:text-6xl [font-family:var(--font-display)] font-bold text-white/90 leading-tight drop-shadow-lg" style={{ textShadow: "0 2px 24px rgba(80,60,160,0.5)" }}>
-              you're not alone
+            <h2 className="text-4xl md:text-6xl [font-family:var(--font-display)] font-bold text-white/90 leading-tight drop-shadow-lg" style={{ textShadow: "0 2px 24px rgba(80,60,160,0.5)" }}>
+              ✨คุณไม่ได้อยู่คนเดียวนะ✨
             </h2>
             <p className="text-white/60 text-xl [font-family:var(--font-handwriting)] leading-relaxed" style={{ textShadow: "0 1px 12px rgba(60,40,120,0.4)" }}>
-              ที่แห่งนี้ ยังคงมีเหล่าดวงดาวที่อยู่เคียงข้าง <br/> ในทุกความรู้สึกของคุณเสมอ 𖤐
+              พื้นที่ตรงนี้จะเป็นไหล่ให้คุณพักพิง <br/> ในวันที่โลกข้างนอกมันใจร้ายเกินไป 𖤐
             </p>
           </div>
         </section>
@@ -219,11 +219,6 @@ export default async function HomePage() {
       </main>
 
       <BottomNav />
-
-      {/* FAB */}
-      <button className="fixed bottom-24 right-6 w-16 h-16 bg-linear-to-tr from-[#4e7c5f] to-[#c2e3c8] text-[#f4faf6] rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-transform z-40 md:hidden">
-        <span className="material-symbols-outlined text-3xl">add</span>
-      </button>
     </>
   );
 }
