@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, Be_Vietnam_Pro, Itim, Mali } from "next/font/google";
+import { Plus_Jakarta_Sans, Be_Vietnam_Pro, Itim, Mali, Dancing_Script, Mitr } from "next/font/google";
 import "./globals.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -23,8 +23,20 @@ const itim = Itim({
 const mali = Mali({
   subsets: ["latin", "thai"],
   variable: "--font-display",
-  weight: ["400", "600", "700"],
+  weight: ["400", "500", "600", "700"],
   style: ["normal", "italic"],
+});
+
+const dancingScript = Dancing_Script({
+  subsets: ["latin"],
+  variable: "--font-dancing",
+  weight: ["400", "600", "700"],
+});
+
+const mitr = Mitr({
+  subsets: ["latin", "thai"],
+  variable: "--font-mitr",
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -40,7 +52,7 @@ export default function RootLayout({
   return (
     <html
       lang="th"
-      className={`${plusJakartaSans.variable} ${beVietnamPro.variable} ${itim.variable} ${mali.variable}`}
+      className={`${mali.className} ${plusJakartaSans.variable} ${beVietnamPro.variable} ${itim.variable} ${mali.variable} ${dancingScript.variable} ${mitr.variable}`}
     >
       <head>
         <link
@@ -48,7 +60,7 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
         />
       </head>
-      <body className="bg-[#fdf8ef] text-[#332b1f] font-[var(--font-body)] antialiased min-h-screen">
+      <body className={`${mali.className} bg-[#fdf8ef] text-[#332b1f] antialiased min-h-screen`}>
         {children}
       </body>
     </html>

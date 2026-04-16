@@ -3,6 +3,7 @@ import BottomNav from "@/components/BottomNav";
 import MoodEntryForm from "@/components/MoodEntryForm";
 import CandleButton from "@/components/CandleButton";
 import StarrySky from "@/components/StarrySky";
+import FlyingImages from "@/components/FlyingImages";
 import { db } from "@/lib/firebase-admin";
 
 type EmotionCategory =
@@ -108,14 +109,17 @@ export default async function HomePage() {
           {/* Horizon glow */}
           <div className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none" style={{ background: "linear-gradient(to top, rgba(200,210,240,0.18), transparent)" }} />
 
-          {/* Stars — one per post, warm colours */}
+          {/* Stars — one per post */}
           <StarrySky count={posts.length} />
+
+          {/* Flying image decorations */}
+          <FlyingImages />
 
           <div className="relative z-10 text-center space-y-5 max-w-xl">
             <h2 className="text-4xl md:text-6xl [font-family:var(--font-display)] font-bold text-white/90 leading-tight drop-shadow-lg" style={{ textShadow: "0 2px 24px rgba(80,60,160,0.5)" }}>
               ✨คุณไม่ได้อยู่คนเดียวนะ✨
             </h2>
-            <p className="text-white/60 text-xl [font-family:var(--font-handwriting)] leading-relaxed" style={{ textShadow: "0 1px 12px rgba(60,40,120,0.4)" }}>
+            <p className="text-white/60 text-xl [font-family:var(--font-display)] leading-relaxed" style={{ textShadow: "0 1px 12px rgba(60,40,120,0.4)" }}>
               พื้นที่ตรงนี้จะเป็นไหล่ให้คุณพักพิง <br/> ในวันที่โลกข้างนอกมันใจร้ายเกินไป 𖤐
             </p>
           </div>
@@ -123,7 +127,7 @@ export default async function HomePage() {
 
         {/* Mood Entry Card */}
         <div className="max-w-4xl mx-auto -mt-10 relative z-20 px-6">
-          <div className="bg-white rounded-xl p-8 shadow-[0_4px_32px_rgba(78,124,95,0.12)]">
+          <div className="bg-white rounded-xl p-8 border border-black shadow-[0_4px_32px_rgba(78,124,95,0.12)]">
             <MoodEntryForm />
           </div>
         </div>
@@ -131,7 +135,7 @@ export default async function HomePage() {
         {/* Feed Section */}
         <section className="max-w-4xl mx-auto mt-12 px-6 space-y-8">
           <div className="flex items-end justify-between border-b-2 border-[#f5eed8] pb-4">
-            <h3 className="text-2xl [font-family:var(--font-headline)] font-bold text-[#4e7c5f]">
+            <h3 className="text-2xl [font-family:var(--font-display)] font-bold text-[#4e7c5f]">
               ความรู้สึกจากผู้คน
             </h3>
             <span className="text-sm text-[#9a8b7a]">
@@ -155,7 +159,7 @@ export default async function HomePage() {
               return (
                 <div
                   key={post.id}
-                  className="bg-white rounded-xl p-8 space-y-6 relative overflow-hidden group shadow-[0_2px_20px_rgba(0,0,0,0.06)]"
+                  className="bg-white rounded-xl p-8 space-y-6 relative overflow-hidden group border border-black shadow-[0_2px_20px_rgba(0,0,0,0.06)]"
                 >
                   <div
                     className="absolute top-0 right-0 w-24 h-24 rounded-bl-[100%] transition-all group-hover:scale-110"
@@ -191,7 +195,7 @@ export default async function HomePage() {
 
                   {/* AI response sub-section — tinted with the post's mood colour */}
                   <div
-                    className="rounded-2xl px-5 py-4 space-y-3"
+                    className="rounded-2xl px-5 py-4 space-y-3 border border-black"
                     style={{ background: colors.blob.replace("0.18", "0.18") }}
                   >
                     <p className="text-sm font-semibold flex items-center gap-2" style={{ color: colors.dot + "bb" }}>

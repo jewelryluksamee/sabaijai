@@ -36,7 +36,7 @@ export default function AiFeedCard() {
       </p>
 
       {/* Card */}
-      <div className="rounded-2xl px-5 py-4 space-y-3" style={{ background: "rgba(232,226,248,0.55)" }}>
+      <div className="rounded-2xl px-5 py-4 space-y-3 border border-black" style={{ background: "rgba(232,226,248,0.55)" }}>
         <p className="text-sm font-semibold text-[#4a3878] flex items-center gap-2">
           <span
             className="w-7 h-7 rounded-full flex items-center justify-center text-base shrink-0"

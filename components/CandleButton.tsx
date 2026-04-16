@@ -69,8 +69,8 @@ export default function CandleButton({
           relative flex items-center gap-2.5 px-5 py-2.5 rounded-full border
           transition-all duration-300 select-none
           ${lit
-            ? "bg-gradient-to-r from-pink-50 to-rose-50 border-pink-200/70"
-            : "bg-white border-[#ede8de] hover:border-pink-200 hover:shadow-[0_2px_14px_rgba(244,114,182,0.14)] active:scale-95"
+            ? "bg-gradient-to-r from-pink-50 to-rose-50 border-black"
+            : "bg-white border-black hover:shadow-[0_2px_14px_rgba(244,114,182,0.14)] active:scale-95"
           }
         `}
         style={lit ? { animation: "candle-glow 2.5s ease-in-out infinite" } : {}}
@@ -88,7 +88,7 @@ export default function CandleButton({
 
         {/* Label */}
         <span className={`text-sm font-medium transition-colors duration-300 ${lit ? "text-orange-500" : "text-[#a09888]"}`}>
-          {lit ? "ส่งแล้ว 🤍" : "ส่งกำลังใจ 🤍"}
+          {lit ? "ส่งแล้ว" : "ส่งกำลังใจ"}
         </span>
 
         {/* Count bubble */}

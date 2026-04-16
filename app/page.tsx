@@ -3,80 +3,92 @@ import GoogleSignIn from "@/components/GoogleSignIn";
 
 export default function LoginPage() {
   return (
-    <main className="min-h-screen flex flex-col md:flex-row items-stretch overflow-hidden relative grainy-texture">
+    <main className="min-h-screen flex items-center justify-center relative overflow-hidden bg-[#fdf8ef] grainy-texture">
+
       {/* Background blobs */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
+      <div className="fixed inset-0 z-0 pointer-events-none">
         <div className="absolute -top-[10%] -left-[5%] w-[50%] h-[50%] bg-[#c2e3c8]/20 blur-[120px] rounded-full" />
         <div className="absolute bottom-0 right-0 w-[60%] h-[60%] bg-[#d4e8c8]/15 blur-[150px] rounded-full" />
       </div>
 
-      {/* Hero Section */}
-      <section className="flex-1 relative flex flex-col justify-center items-center p-8 md:p-16 z-10">
-        <div className="max-w-xl w-full space-y-8">
-          {/* Branding */}
-          <div className="flex items-center space-x-3 mb-12">
-            <div className="w-12 h-12 flex items-center justify-center">
-              <Image src="/2.png" alt="Sabaijai logo" width={48} height={48} className="object-contain" />
-            </div>
-            <span className="font-[var(--font-display)] text-3xl font-extrabold tracking-tight text-[#4e7c5f]">
-              Sabaijai
+      {/* Main content */}
+      <div className="relative z-10 flex flex-col items-center w-full px-6 pt-8 pb-20">
+
+        {/* Brand mark */}
+        <div className="flex items-center gap-3 mb-7">
+          <div className="w-12 h-12 rounded-2xl bg-[#d4e8c8] border border-black flex items-center justify-center shadow-sm">
+            <Image src="/2.png" alt="Sabaijai" width={34} height={34} className="object-contain" />
+          </div>
+          <div className="flex flex-col leading-none">
+            <span className="[font-family:var(--font-display)] text-2xl font-bold text-[#332b1f] tracking-wide">
+              sabaijai
+            </span>
+            <span className="text-[10px] text-[#9a8c7d] tracking-widest uppercase font-medium mt-0.5">
+              สบายใจ
             </span>
           </div>
+        </div>
 
-          {/* Headlines */}
-          <div className="space-y-4">
-            <h1 className="font-[var(--font-headline)] text-5xl md:text-7xl font-extrabold text-[#332b1f] tracking-tight leading-tight">
-              สบายใจ{" "}
-              <span className="text-[#3d6b4e] block md:inline">(Sabaijai)</span>
-            </h1>
-            <p className="text-xl md:text-2xl text-[#6b5e4d] font-medium leading-relaxed max-w-md">
-              พื้นที่ปลอดภัย ให้ใจได้พัก
+        {/* Hero headline */}
+        <div className="text-center mb-7 w-full max-w-sm">
+          <h1 className="[font-family:var(--font-display)] text-[4.5rem] font-extrabold text-[#332b1f] leading-none mb-5 tracking-tight">
+            สบายใจ
+          </h1>
+          <p className="text-[#6b5e4d] text-lg leading-relaxed font-medium [font-family:var(--font-display)]">
+            พื้นที่ปลอดภัย ให้ใจได้พัก
+          </p>
+          <p className="text-[#a09080] text-sm mt-2 tracking-wide">
+            Your safe space to breathe
+          </p>
+        </div>
+
+        {/* Feature tags */}
+        <div className="flex gap-2 flex-wrap justify-center mb-7">
+          <span className="px-4 py-1.5 rounded-full bg-[#d4e8c8] border border-black text-[#2a4d32] text-xs font-semibold tracking-wide">
+            แชร์ความรู้สึกโดยไม่ถูกตัดสิน
+          </span>
+          <span className="px-4 py-1.5 rounded-full bg-[#e8d8a8] border border-black text-[#5a4a25] text-xs font-semibold tracking-wide">
+            แชร์เพลงช่วยฮีลใจ
+          </span>
+          <span className="px-4 py-1.5 rounded-full bg-[#c8dce8] border border-black text-[#253d5a] text-xs font-semibold tracking-wide">
+            วิเคราะห์อารมณ์
+          </span>
+        </div>
+
+        {/* Login card */}
+        <div className="w-full max-w-[360px] bg-white border border-black rounded-2xl shadow-[0_4px_32px_rgba(78,124,95,0.12)] overflow-hidden">
+          <div className="p-8 space-y-6">
+            <div className="text-center">
+              <h2 className="[font-family:var(--font-display)] text-xl font-bold text-[#332b1f]">
+                ยินดีต้อนรับกลับมา
+              </h2>
+              <p className="text-[#9a8c7d] text-sm mt-1.5 leading-relaxed">
+                ลงชื่อเข้าใช้พื้นที่สบายใจของคุณ
+              </p>
+            </div>
+
+            <GoogleSignIn />
+
+            <p className="text-center text-[11px] text-[#b8a898] leading-relaxed">
+              การเข้าสู่ระบบถือว่าคุณยอมรับ{" "} <br/>
+              <span className="underline decoration-dotted cursor-pointer hover:text-[#6b5e4d] transition-colors">
+                นโยบายความเป็นส่วนตัว
+              </span>
+              {" "}ของเรา
             </p>
           </div>
-
-          {/* Illustration */}
-          <div className="relative mt-12 group">
-            <div className="absolute -inset-4 bg-white/40 backdrop-blur-md rounded-xl transform -rotate-2 scale-105 transition-transform group-hover:rotate-0 duration-700" />
-            <div className="relative aspect-square md:aspect-video rounded-xl overflow-hidden bg-gradient-to-br from-[#c2e3c8]/30 to-[#d4e8c8]/30 flex items-center justify-center">
-              <img
-                alt="Soft illustrated cloud character"
-                className="w-4/5 h-4/5 object-contain drop-shadow-2xl"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3gxaUy2X05YstuDg-Fbu_LRqJ100wRSDBpXw4g5Bo93wgcGkd40eylXekfucfYcrlnp9Q_58PdRo_RS7M9HDXRZsrW2CL_gGcd6La6jDPiVlLNHs66YIjiYh-suqfz7f4Do1iqHqvH13-jqTBqyEjKxqjH-y0J7IVoXpJpK1oEc9H4K9_RDyDvcNNyB_e8iWuXlxm2nBe1sXXjskUSD9KLu5xU_387s_u3Z7i9VcNy5p8GLJsTYqe1vt5xXrc6QP1UDFRipsVvaTb"
-              />
-            </div>
-          </div>
-
-          {/* Tags */}
-          <div className="flex flex-wrap gap-3 pt-4">
-            <span className="px-5 py-2 rounded-full bg-[#d4e8c8]/30 text-[#2a4d32] text-sm font-medium">
-              ผ่อนคลาย
-            </span>
-            <span className="px-5 py-2 rounded-full bg-[#e8d8a8]/30 text-[#5a4a25] text-sm font-medium">
-              ทำสมาธิ
-            </span>
-            <span className="px-5 py-2 rounded-full bg-[#c2e3c8]/30 text-[#1a3d25] text-sm font-medium">
-              บันทึกอารมณ์
-            </span>
-          </div>
         </div>
-      </section>
 
-      {/* Login Section */}
-      <section className="w-full md:w-[480px] bg-white/40 backdrop-blur-2xl md:bg-[#ffffff]/80 flex flex-col justify-center items-center p-8 md:p-12 z-20 border-t md:border-t-0 md:border-l border-white/20">
-        <div className="w-full max-w-sm space-y-10">
-          <div className="text-center md:text-left">
-            <h2 className="font-[var(--font-headline)] text-2xl font-bold text-[#332b1f] mb-2">
-              ยินดีต้อนรับกลับมา
-            </h2>
-            <p className="text-[#6b5e4d]">เริ่มต้นช่วงเวลาแห่งความสงบของคุณ</p>
-          </div>
-
-          <div className="space-y-4">
-            {/* Google Login */}
-            <GoogleSignIn />
-          </div>
-        </div>
-      </section>
+      </div>
+      {/* Footer */}
+      <footer className="absolute bottom-0 left-0 right-0 z-10 bg-[#2d1b4e] py-4 px-6 text-center">
+        <p className="text-white/80 text-xs tracking-wide">
+          © 2026 Sabaijai · สบายใจ
+        </p>
+        <p className="text-white/50 text-[11px] mt-1">
+          Made by MentalEDDY Team ♥ 
+        </p>
+      </footer>
     </main>
   );
 }

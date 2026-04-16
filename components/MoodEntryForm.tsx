@@ -55,8 +55,8 @@ export default function MoodEntryForm() {
 
         {/* Colour picker */}
         <div className="space-y-3">
-          <label className="text-sm font-semibold text-[#4e7c5f]/60 uppercase tracking-wider">
-            วันนี้รู้สึกเป็นสีอะไร?
+          <label className="text-sm font-semibold text-black uppercase tracking-wider">
+            วันนี้คุณรู้สึกเป็นสีอะไร?
           </label>
 
           <div className="flex flex-wrap gap-2.5">
@@ -65,7 +65,7 @@ export default function MoodEntryForm() {
                 key={value}
                 type="button"
                 onClick={() => setSelectedMood(value === selectedMood ? null : value)}
-                className="w-7 h-7 rounded-full shrink-0 transition-all duration-200"
+                className="w-7 h-7 rounded-full shrink-0 border border-black transition-all duration-200"
                 style={{
                   backgroundColor: hex,
                   opacity: selectedMood && selectedMood !== value ? 0.3 : 1,
@@ -82,14 +82,14 @@ export default function MoodEntryForm() {
 
         {/* Optional text */}
         <div className="space-y-2">
-          <label className="text-sm font-semibold text-[#4e7c5f]/60 uppercase tracking-wider">
+          <label className="text-sm font-semibold text-black uppercase tracking-wider">
             บอกความในใจ
           </label>
           <textarea
             name="content"
             rows={3}
             required
-            className="w-full bg-[#e8dfc6] rounded-lg px-5 py-4 border-none outline-none focus:ring-2 focus:ring-[#4e7c5f]/20 text-[#332b1f] placeholder:text-[#c8baa8] resize-none transition-all"
+            className="w-full bg-[#e8dfc6] rounded-lg px-5 py-4 border border-black outline-none focus:ring-2 focus:ring-[#4e7c5f]/20 text-[#332b1f] placeholder:text-[#c8baa8] resize-none transition-all"
             placeholder="วันนี้เจอเรื่องอะไรมาบ้าง..."
           />
         </div>
@@ -98,7 +98,7 @@ export default function MoodEntryForm() {
           <button
             type="submit"
             disabled={pending || !selectedMood}
-            className="px-8 py-3 bg-linear-to-r from-[#4e7c5f] to-[#3d6b4e] text-[#f4faf6] rounded-full font-semibold shadow-md hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
+            className="px-8 py-3 bg-linear-to-r from-[#7c5cbf] to-[#6b4aad] text-white rounded-full border border-black font-semibold shadow-md hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {pending ? "กำลังส่ง..." : "ส่งขึ้นสู่ดวงดาว"}
           </button>

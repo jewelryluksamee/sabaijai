@@ -111,20 +111,17 @@ export default function MusicPage() {
       <main className="relative z-10 pt-24 px-6 max-w-5xl mx-auto pb-32 grainy-texture">
         {/* Hero */}
         <section className="mb-12">
-          <span className="inline-block px-4 py-1 rounded-full bg-[#d4e8c8]/60 text-[#2a4d32] text-xs font-semibold mb-4 tracking-wider uppercase">
-            Active Session
-          </span>
-          <h2 className="text-4xl md:text-5xl font-extrabold text-[#332b1f] leading-tight">
-            Listening to music together for comfort
+          <h2 className="text-3xl md:text-5xl font-extrabold text-[#332b1f] leading-tight">
+            ฝากบทเพลงนี้ <br/> ไปปลอบประโลมหัวใจของใครสักคน :D
           </h2>
         </section>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Left: Share Input */}
           <div className="lg:col-span-5 flex flex-col gap-8">
-            <div className="bg-white/40 backdrop-blur-md border border-white/20 rounded-2xl p-8">
+            <div className="bg-white/100 backdrop-blur-md border border-black/100 rounded-2xl p-8">
               <label className="block text-[#2a4d32] font-semibold mb-4">
-                Share a Healing Note
+                Let's Share a Healing Song
               </label>
 
               {/* URL Input */}
@@ -134,11 +131,11 @@ export default function MusicPage() {
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
                   placeholder="Paste YouTube link here..."
-                  className="w-full bg-white/60 rounded-xl px-5 py-4 text-[#332b1f] placeholder-[#6b5e4d]/50 border border-white/40 outline-none focus:ring-2 focus:ring-[#4e7c5f]/30 transition-all"
+                  className="w-full bg-black/12 rounded-xl px-5 py-4 text-[#332b1f] placeholder-[#6b5e4d]/50 border border-black/40 outline-none focus:ring-1 focus:ring-black/30 transition-all"
                 />
                 <div className="absolute right-3 top-1/2 -translate-y-1/2">
                   {loadingPreview ? (
-                    <span className="material-symbols-outlined text-[#4e7c5f]/60 animate-spin">
+                    <span className="material-symbols-outlined text-black/60 animate-spin">
                       progress_activity
                     </span>
                   ) : (
@@ -151,7 +148,7 @@ export default function MusicPage() {
 
               {/* Preview Card */}
               {preview && (
-                <div className="bg-white/70 rounded-xl overflow-hidden mb-6 border border-white/30">
+                <div className="bg-white/70 rounded-xl overflow-hidden mb-6 border border-black">
                   <div className="relative aspect-video">
                     <img
                       className="w-full h-full object-cover"
@@ -164,7 +161,7 @@ export default function MusicPage() {
                       rel="noopener noreferrer"
                       className="absolute inset-0 bg-black/20 flex items-center justify-center hover:bg-black/30 transition-colors"
                     >
-                      <div className="w-14 h-14 rounded-full bg-white/30 backdrop-blur-md flex items-center justify-center border border-white/40">
+                      <div className="w-14 h-14 rounded-full bg-white/30 backdrop-blur-md flex items-center justify-center border border-black">
                         <span className="material-symbols-outlined text-white text-3xl">
                           play_arrow
                         </span>
@@ -190,7 +187,7 @@ export default function MusicPage() {
               <textarea
                 value={caption}
                 onChange={(e) => setCaption(e.target.value)}
-                className="w-full bg-white/60 rounded-xl px-5 py-4 text-[#332b1f] placeholder-[#6b5e4d]/50 border border-white/40 outline-none focus:ring-2 focus:ring-[#4e7c5f]/30 transition-all resize-none mb-6"
+                className="w-full bg-black/12 rounded-xl px-5 py-4 text-[#332b1f] placeholder-[#6b5e4d]/50 border border-black/40 outline-none focus:ring-1 focus:ring-black/30 transition-all resize-none mb-4"
                 placeholder="Add a caption... (optional)"
                 rows={3}
               />
@@ -198,9 +195,9 @@ export default function MusicPage() {
               <button
                 onClick={handleShare}
                 disabled={!preview}
-                className="w-full h-14 bg-[#4e7c5f] hover:bg-[#3d6b4e] text-white rounded-xl text-base font-bold shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
+                className="w-full h-14 border border-black/40 bg-[#7c5cbf] hover:bg-[#6b4aad] text-white rounded-xl text-base font-bold shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                <span>Share with the group</span>
+                <span>Share to Community</span>
                 <span className="material-symbols-outlined">send</span>
               </button>
             </div>
@@ -209,12 +206,12 @@ export default function MusicPage() {
           {/* Right: Feed */}
           <div className="lg:col-span-7">
             <h3 className="text-xl font-bold text-[#332b1f] mb-6">
-              Shared for Comfort
+              Healing Songs
             </h3>
 
             {feed.length === 0 && (
-              <div className="bg-white/30 border border-white/20 rounded-2xl p-10 text-center text-[#6b5e4d]">
-                <span className="material-symbols-outlined text-4xl mb-3 block text-[#4e7c5f]/40">music_note</span>
+              <div className="bg-white/30 border border-black rounded-2xl p-10 text-center text-[#6b5e4d]">
+                <span className="material-symbols-outlined text-4xl mb-3 block text-black/10">music_note</span>
                 <p className="text-sm">No songs shared yet. Be the first!</p>
               </div>
             )}
@@ -223,9 +220,9 @@ export default function MusicPage() {
               {feed.map((item) => (
                 <div
                   key={item.id}
-                  className="bg-white/40 hover:bg-white/60 backdrop-blur-md border border-white/20 transition-all rounded-2xl p-5 flex gap-5"
+                  className="bg-white/40 hover:bg-white/60 backdrop-blur-md border border-black transition-all rounded-2xl p-5 flex gap-5"
                 >
-                  <div className="w-28 h-28 shrink-0 rounded-xl overflow-hidden relative">
+                  <div className="w-28 h-28 shrink-0 rounded-xl overflow-hidden relative border border-black">
                     {item.youtubeId ? (
                       <a
                         href={`https://www.youtube.com/watch?v=${item.youtubeId}`}
