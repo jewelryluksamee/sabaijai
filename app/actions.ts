@@ -39,12 +39,34 @@ export async function submitPost(formData: FormData) {
 
   if (!content || !mood) return;
 
+  // Detect emotion with AI (fire-and-forget on failure)
+  let emotion: string | null = null;
+  let emotionScore: number | null = null;
+  let triggerPopup = false;
+  try {
+    const base = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
+    const res = await fetch(`${base}/api/detect-emotion`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ content }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      emotion = data.category ?? null;
+      emotionScore = data.score ?? null;
+      triggerPopup = data.trigger_popup ?? false;
+    }
+  } catch {
+    // emotion stays null — not blocking
+  }
+
   await db.collection("posts").add({
     content,
     mood,
     moodLabel: moodLabels[mood] ?? mood,
     candles: 0,
     createdAt: FieldValue.serverTimestamp(),
+    ...(emotion ? { emotion, emotionScore, triggerPopup } : {}),
   });
 
   revalidatePath("/home");

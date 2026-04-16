@@ -5,6 +5,15 @@ import CandleButton from "@/components/CandleButton";
 import StarrySky from "@/components/StarrySky";
 import { db } from "@/lib/firebase-admin";
 
+type EmotionCategory =
+  | "HAPPY"
+  | "SAD"
+  | "ANGRY"
+  | "ANXIOUS"
+  | "BURNOUT"
+  | "NEUTRAL"
+  | "CRITICAL_RISK";
+
 type Post = {
   id: string;
   content: string;
@@ -12,6 +21,20 @@ type Post = {
   moodLabel: string;
   candles: number;
   createdAt: string;
+  emotion?: EmotionCategory;
+};
+
+const emotionConfig: Record<
+  EmotionCategory,
+  { label: string; icon: string; bg: string; text: string; border: string }
+> = {
+  HAPPY:         { label: "มีความสุข",       icon: "sentiment_very_satisfied", bg: "rgba(240,200,50,0.15)",  text: "#c8960a", border: "rgba(240,200,50,0.5)" },
+  SAD:           { label: "เศร้า",            icon: "sentiment_sad",            bg: "rgba(56,128,232,0.12)",  text: "#3063b8", border: "rgba(56,128,232,0.4)" },
+  ANGRY:         { label: "โกรธ",             icon: "sentiment_very_dissatisfied", bg: "rgba(232,93,74,0.12)", text: "#c03020", border: "rgba(232,93,74,0.4)" },
+  ANXIOUS:       { label: "กังวล",            icon: "warning",                  bg: "rgba(240,136,58,0.12)", text: "#b86010", border: "rgba(240,136,58,0.4)" },
+  BURNOUT:       { label: "หมดแรง",           icon: "battery_0_bar",            bg: "rgba(144,72,208,0.12)", text: "#703aa0", border: "rgba(144,72,208,0.4)" },
+  NEUTRAL:       { label: "เฉยๆ",             icon: "sentiment_neutral",        bg: "rgba(144,144,144,0.12)",text: "#666666", border: "rgba(144,144,144,0.4)" },
+  CRITICAL_RISK: { label: "ต้องการความช่วยเหลือ", icon: "emergency",           bg: "rgba(232,40,40,0.12)",  text: "#c00000", border: "rgba(232,40,40,0.5)" },
 };
 
 const moodPalette: Record<string, { blob: string; dot: string }> = {
@@ -53,6 +76,7 @@ async function getPosts(): Promise<Post[]> {
       moodLabel: data.moodLabel ?? data.mood ?? "เศร้า",
       candles: data.candles ?? 0,
       createdAt: data.createdAt?.toDate?.()?.toISOString() ?? new Date().toISOString(),
+      emotion: data.emotion ?? undefined,
     };
   });
 }
@@ -127,6 +151,7 @@ export default async function HomePage() {
 
             {posts.map((post) => {
               const colors = moodPalette[post.mood] ?? moodPalette.blue;
+              const emotion = (post.emotion ?? "NEUTRAL") as EmotionCategory;
               return (
                 <div
                   key={post.id}
@@ -136,13 +161,28 @@ export default async function HomePage() {
                     className="absolute top-0 right-0 w-24 h-24 rounded-bl-[100%] transition-all group-hover:scale-110"
                     style={{ backgroundColor: colors.blob }}
                   />
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-col gap-5">
+                    <div className="flex items-center gap-2">
+                      <span
+                        className="w-2.5 h-2.5 rounded-full shrink-0"
+                        style={{ backgroundColor: colors.dot }}
+                      />
+                      <span className="text-xs text-[#9a8b7a]">
+                        {timeAgo(post.createdAt)} • ไม่ระบุตัวตน
+                      </span>
+                    </div>
                     <span
-                      className="w-2.5 h-2.5 rounded-full shrink-0"
-                      style={{ backgroundColor: colors.dot }}
-                    />
-                    <span className="text-xs text-[#9a8b7a]">
-                      {timeAgo(post.createdAt)} • ไม่ระบุตัวตน
+                      className="self-start flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full border"
+                      style={{
+                        background: emotionConfig[emotion].bg,
+                        color: emotionConfig[emotion].text,
+                        borderColor: emotionConfig[emotion].border,
+                      }}
+                    >
+                      <span className="material-symbols-outlined text-sm leading-none" style={{ fontSize: "14px" }}>
+                        {emotionConfig[emotion].icon}
+                      </span>
+                      {emotionConfig[emotion].label}
                     </span>
                   </div>
                   <p className="text-lg leading-relaxed text-[#332b1f] font-light">
