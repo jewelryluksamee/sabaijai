@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Image from "next/image";
 import GoogleSignIn from "@/components/GoogleSignIn";
 
 export default function LoginPage() {
@@ -15,10 +15,8 @@ export default function LoginPage() {
         <div className="max-w-xl w-full space-y-8">
           {/* Branding */}
           <div className="flex items-center space-x-3 mb-12">
-            <div className="w-12 h-12 bg-[#4e7c5f] rounded-xl flex items-center justify-center text-[#f4faf6] shadow-lg shadow-[#4e7c5f]/10">
-              <span className="material-symbols-outlined text-3xl">
-                bubble_chart
-              </span>
+            <div className="w-12 h-12 flex items-center justify-center">
+              <Image src="/2.png" alt="Sabaijai logo" width={48} height={48} className="object-contain" />
             </div>
             <span className="font-[var(--font-headline)] text-3xl font-extrabold tracking-tight text-[#4e7c5f]">
               Sabaijai

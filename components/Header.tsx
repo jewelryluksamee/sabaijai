@@ -1,13 +1,11 @@
-import Link from "next/link";
+import Image from "next/image";
 import SignOutButton from "@/components/SignOutButton";
 
 export default function Header() {
   return (
     <header className="fixed top-0 w-full z-50 bg-[#fdf8ef]/70 backdrop-blur-xl flex items-center justify-between px-6 h-16">
       <div className="flex items-center gap-3">
-        <span className="material-symbols-outlined text-[#4e7c5f] text-2xl">
-          bubble_chart
-        </span>
+        <Image src="/2.png" alt="Sabaijai logo" width={32} height={32} className="object-contain" />
         <h1 className="text-2xl font-bold text-[#4e7c5f] [font-family:var(--font-display)] tracking-tight">
           Sabaijai
         </h1>
