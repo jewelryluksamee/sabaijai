@@ -3,7 +3,7 @@ import GoogleSignIn from "@/components/GoogleSignIn";
 
 export default function LoginPage() {
   return (
-    <main className="min-h-screen flex items-center justify-center relative overflow-hidden bg-[#fdf8ef] grainy-texture">
+    <main className="min-h-screen flex flex-col items-center justify-between relative overflow-hidden bg-[#fdf8ef] grainy-texture">
 
       {/* Background blobs */}
       <div className="fixed inset-0 z-0 pointer-events-none">
@@ -12,7 +12,7 @@ export default function LoginPage() {
       </div>
 
       {/* Main content */}
-      <div className="relative z-10 flex flex-col items-center w-full px-6 pt-8 pb-20">
+      <div className="relative z-10 flex flex-col items-center w-full px-6 pt-8 pb-8">
 
         {/* Brand mark */}
         <div className="flex items-center gap-3 mb-7">
@@ -81,7 +81,7 @@ export default function LoginPage() {
 
       </div>
       {/* Footer */}
-      <footer className="absolute bottom-0 left-0 right-0 z-10 bg-[#2d1b4e] py-4 px-6 text-center">
+      <footer className="relative z-10 w-full bg-[#2d1b4e] py-4 px-6 text-center">
         <p className="text-white/80 text-xs tracking-wide">
           © 2026 Sabaijai · สบายใจ
         </p>
