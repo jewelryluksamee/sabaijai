@@ -86,7 +86,9 @@ export default function LoginPage() {
           © 2026 Sabaijai · สบายใจ
         </p>
         <p className="text-white/50 text-[11px] mt-1">
-          Made by MentalEDDY Team ♥ 
+          Made by MentalEDDY Team ♥ <br/>
+          Website Dev by Jewelry and Academic by Tawan with supporting from Bonus and P'Mo
+
         </p>
       </footer>
     </main>
