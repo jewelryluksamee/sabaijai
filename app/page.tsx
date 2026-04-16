@@ -16,7 +16,7 @@ export default function LoginPage() {
 
         {/* Brand mark */}
         <div className="flex items-center gap-3 mb-7">
-          <div className="w-12 h-12 rounded-2xl bg-[#d4e8c8] border border-black flex items-center justify-center shadow-sm">
+          <div className="w-12 h-12 rounded-2xl bg-[#fff9a0] border border-black flex items-center justify-center shadow-sm">
             <Image src="/2.png" alt="Sabaijai" width={34} height={34} className="object-contain" />
           </div>
           <div className="flex flex-col leading-none">

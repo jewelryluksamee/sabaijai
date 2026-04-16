@@ -1,4 +1,4 @@
-import Anthropic from "@anthropic-ai/sdk";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export type EmotionCategory =
   | "HAPPY"
@@ -14,27 +14,24 @@ export type EmotionResult = {
   score: number;
   reason: string;
   trigger_popup: boolean;
+  aiText: string;
 };
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
-const SYSTEM_PROMPT = `You are a specialized Emotion Detection Engine. Analyze the user's input and classify it into exactly one of these categories:
+const SYSTEM_PROMPT = `คุณคือ Sabaijai AI ทำสองหน้าที่พร้อมกันในคำตอบเดียว:
 
-[HAPPY]: Joy, success, or satisfaction.
-[SAD]: Disappointment, grief, or low mood.
-[ANGRY]: Frustration, annoyance, or rage.
-[ANXIOUS]: Worry, stress, or uncertainty.
-[BURNOUT]: Chronic exhaustion, loss of motivation, or feeling "empty."
-[NEUTRAL]: Facts, general info, or no clear emotion.
-[CRITICAL_RISK]: Thoughts of self-harm, suicide, or extreme hopelessness.
+1. วิเคราะห์อารมณ์จากข้อความ และจำแนกเป็นหนึ่งในนี้:
+   HAPPY | SAD | ANGRY | ANXIOUS | BURNOUT | NEUTRAL | CRITICAL_RISK
 
-Output Requirements:
-Return ONLY a JSON object.
-If the category is CRITICAL_RISK, set trigger_popup to true.
-Include a score (0.0 to 1.0) and a brief reason.
+2. ตอบสนองด้วยภาษาไทยที่อ่อนโยน อบอุ่น 2-3 ประโยค
+   - รับฟังโดยไม่ตัดสิน
+   - ห้ามให้คำแนะนำทางการแพทย์
+   - หาก CRITICAL_RISK ให้แนะนำสายด่วน 1323 อย่างอ่อนโยน
+   - ไม่ต้องขึ้นต้นว่า "เข้าใจแล้ว" หรือ "รับทราบ"
 
-Example output:
-{"category":"SAD","score":0.82,"reason":"Expresses grief and low mood.","trigger_popup":false}`;
+ตอบเป็น JSON เท่านั้น:
+{"category":"NEUTRAL","score":0.0,"reason":"brief reason","trigger_popup":false,"aiText":"ข้อความตอบกลับภาษาไทย"}`;
 
 export async function POST(request: Request) {
   const { content } = await request.json();
@@ -43,21 +40,19 @@ export async function POST(request: Request) {
     return Response.json({ error: "Missing content" }, { status: 400 });
   }
 
-  const message = await client.messages.create({
-    model: "claude-haiku-4-5-20251001",
-    max_tokens: 256,
-    system: SYSTEM_PROMPT,
-    messages: [{ role: "user", content }],
+  const model = genAI.getGenerativeModel({
+    model: "gemini-3.1-flash-lite-preview",
+    systemInstruction: SYSTEM_PROMPT,
   });
 
-  const raw = (message.content[0] as { type: string; text: string }).text.trim();
+  const result = await model.generateContent(content);
+  const raw = result.response.text().trim();
 
-  // Extract JSON even if model wraps it in markdown fences
   const jsonMatch = raw.match(/\{[\s\S]*\}/);
   if (!jsonMatch) {
     return Response.json({ error: "Invalid AI response" }, { status: 502 });
   }
 
-  const result: EmotionResult = JSON.parse(jsonMatch[0]);
-  return Response.json(result);
+  const parsed: EmotionResult = JSON.parse(jsonMatch[0]);
+  return Response.json(parsed);
 }

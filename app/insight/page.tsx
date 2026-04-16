@@ -1,7 +1,9 @@
 import Header from "@/components/Header";
 import BottomNav from "@/components/BottomNav";
-import { db } from "@/lib/firebase-admin";
-import Anthropic from "@anthropic-ai/sdk";
+import { db, auth } from "@/lib/firebase-admin";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { cookies } from "next/headers";
+import { FieldValue } from "firebase-admin/firestore";
 
 type EmotionCategory =
   | "HAPPY"
@@ -41,13 +43,27 @@ const moodColorMap: Record<string, { hex: string; thaiName: string; meaning: str
 };
 
 type PostData = { content: string; mood: string; emotion: EmotionCategory };
+type AIInsight = { summary: string; tips: string[]; quote: string };
 
-async function getWeeklyPosts(): Promise<PostData[]> {
+async function getCurrentUserId(): Promise<string | null> {
+  try {
+    const cookieStore = await cookies();
+    const sessionCookie = cookieStore.get("__session")?.value;
+    if (!sessionCookie) return null;
+    const decoded = await auth.verifySessionCookie(sessionCookie);
+    return decoded.uid;
+  } catch {
+    return null;
+  }
+}
+
+async function getUserWeeklyPosts(userId: string): Promise<PostData[]> {
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
   const snapshot = await db
     .collection("posts")
+    .where("userId", "==", userId)
     .where("createdAt", ">=", sevenDaysAgo)
     .orderBy("createdAt", "desc")
     .get();
@@ -62,70 +78,87 @@ async function getWeeklyPosts(): Promise<PostData[]> {
   });
 }
 
-async function generateAIInsight(posts: PostData[]): Promise<{ summary: string; tips: string[] }> {
-  if (posts.length === 0) {
-    return {
-      summary:
-        "ยังไม่มีข้อมูลในสัปดาห์นี้ เริ่มบันทึกความรู้สึกของคุณเพื่อรับการวิเคราะห์เชิงลึก",
-      tips: [
-        "เริ่มบันทึกความรู้สึกประจำวันเพื่อติดตามรูปแบบอารมณ์ของตัวเอง",
-        "แบ่งปันความรู้สึกกับชุมชนเพื่อรับกำลังใจ",
-      ],
-    };
-  }
-
-  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+async function generateGeminiInsight(posts: PostData[]): Promise<AIInsight> {
+  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+  const model = genAI.getGenerativeModel({
+    model: "gemini-3.1-flash-lite-preview",
+    systemInstruction: `You are a compassionate Thai mental wellness AI assistant named Sabaijai.
+Analyze weekly mood posts and return ONLY a JSON object with exactly these keys:
+- "summary": 2-3 sentence empathetic insight about the week's emotional patterns (Thai, warm encouraging tone)
+- "tips": array of exactly 2 specific actionable coping strategies (Thai, each under 80 characters)
+- "quote": one short inspirational quote in Thai (under 50 characters, no attribution)`,
+  });
 
   const postsText = posts
     .slice(0, 20)
     .map((p, i) => `${i + 1}. [${p.emotion}] "${p.content}"`)
     .join("\n");
 
-  const systemPrompt = `You are a compassionate Thai mental wellness AI assistant named Sabaijai.
-Analyze the weekly mood posts and provide a supportive weekly insight in Thai language.
-Return ONLY a JSON object with exactly these keys:
-- "summary": A 2-3 sentence empathetic insight about the week's overall emotional patterns (in Thai, warm and encouraging tone)
-- "tips": Array of exactly 2 specific, actionable coping strategies (in Thai, each under 80 characters)`;
-
-  const message = await client.messages.create({
-    model: "claude-haiku-4-5-20251001",
-    max_tokens: 512,
-    system: [
-      {
-        type: "text",
-        text: systemPrompt,
-        cache_control: { type: "ephemeral" },
-      },
-    ],
-    messages: [{ role: "user", content: `Posts from this week:\n${postsText}` }],
-  });
-
-  const raw = (message.content[0] as { type: string; text: string }).text.trim();
+  const result = await model.generateContent(`Posts from this week:\n${postsText}`);
+  const raw = result.response.text().trim();
   const jsonMatch = raw.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) {
-    return {
-      summary: "สัปดาห์นี้มีความรู้สึกหลากหลาย ทุกอารมณ์ล้วนมีคุณค่าและเป็นส่วนหนึ่งของการเติบโต",
-      tips: [
-        "ให้เวลากับตัวเองในการรับรู้และยอมรับความรู้สึก",
-        "พูดคุยกับคนที่ไว้วางใจเพื่อแบ่งเบาความรู้สึก",
-      ],
-    };
-  }
+  if (!jsonMatch) throw new Error("No JSON in Gemini response");
 
-  const result = JSON.parse(jsonMatch[0]);
+  const parsed = JSON.parse(jsonMatch[0]);
   return {
-    summary:
-      typeof result.summary === "string"
-        ? result.summary
-        : "สัปดาห์นี้มีความรู้สึกหลากหลาย",
-    tips: Array.isArray(result.tips)
-      ? result.tips.slice(0, 2).map(String)
-      : ["ดูแลสุขภาพจิตของตัวเอง", "พักผ่อนให้เพียงพอ"],
+    summary: typeof parsed.summary === "string" ? parsed.summary : "สัปดาห์นี้มีความรู้สึกหลากหลาย",
+    tips: Array.isArray(parsed.tips) ? parsed.tips.slice(0, 2).map(String) : ["ดูแลสุขภาพจิตของตัวเอง", "พักผ่อนให้เพียงพอ"],
+    quote: typeof parsed.quote === "string" ? parsed.quote : "ทุกความรู้สึกล้วนมีคุณค่า",
   };
 }
 
+async function getOrRefreshInsight(userId: string, posts: PostData[]): Promise<AIInsight> {
+  const total = posts.length;
+  const fallback: AIInsight = {
+    summary: "ยังไม่มีข้อมูลในสัปดาห์นี้ เริ่มบันทึกความรู้สึกของคุณเพื่อรับการวิเคราะห์เชิงลึก",
+    tips: [
+      "เริ่มบันทึกความรู้สึกประจำวันเพื่อติดตามรูปแบบอารมณ์ของตัวเอง",
+      "แบ่งปันความรู้สึกกับชุมชนเพื่อรับกำลังใจ",
+    ],
+    quote: "ทุกความรู้สึกที่เกิดขึ้น คือสัญญาณของการมีอยู่และการเติบโตที่งดงามเสมอ",
+  };
+
+  if (total === 0) return fallback;
+
+  const insightRef = db.collection("insights").doc(userId);
+  const insightDoc = await insightRef.get();
+  const cached = insightDoc.data();
+  const cachedCount: number = cached?.generatedAtCount ?? 0;
+
+  // Regenerate every 3 new posts (at counts 3, 6, 9, …)
+  const shouldRegenerate = Math.floor(total / 3) > Math.floor(cachedCount / 3);
+
+  if (!shouldRegenerate && cached?.summary) {
+    return {
+      summary: cached.summary,
+      tips: cached.tips ?? fallback.tips,
+      quote: cached.quote ?? fallback.quote,
+    };
+  }
+
+  if (total < 3 && !cached?.summary) {
+    // Not yet enough posts for first generation
+    return {
+      ...fallback,
+      summary: `มีบันทึก ${total} รายการแล้ว อีก ${3 - total} รายการจะได้รับการวิเคราะห์ AI ครั้งแรก`,
+    };
+  }
+
+  const insight = await generateGeminiInsight(posts);
+
+  await insightRef.set({
+    ...insight,
+    generatedAtCount: total,
+    updatedAt: FieldValue.serverTimestamp(),
+  });
+
+  return insight;
+}
+
 export default async function InsightPage() {
-  const posts = await getWeeklyPosts();
+  const userId = await getCurrentUserId();
+
+  const posts = userId ? await getUserWeeklyPosts(userId) : [];
   const total = posts.length;
 
   // --- Emotion distribution ---
@@ -139,7 +172,7 @@ export default async function InsightPage() {
     .sort((a, b) => b[1] - a[1])
     .slice(0, 3);
 
-  // Stability = (HAPPY + NEUTRAL) / total — how "positive/balanced" the week is
+  // Stability = (HAPPY + NEUTRAL) / total
   const stableCount = (emotionCounts.HAPPY ?? 0) + (emotionCounts.NEUTRAL ?? 0);
   const stabilityPct = total > 0 ? Math.round((stableCount / total) * 100) : 0;
 
@@ -159,33 +192,38 @@ export default async function InsightPage() {
 
   // --- Donut chart segments ---
   const donutColors = ["#4a6b45", "#4e7c5f", "#8a7a50"];
-  let cumulativePct = 0;
-  const donutSegments = top3.map(([emotion, count], i) => {
-    const pct = total > 0 ? Math.round((count / total) * 100) : 0;
-    const segment = {
-      emotion,
-      count,
-      pct,
-      offset: cumulativePct,
-      color: donutColors[i],
-    };
-    cumulativePct += pct;
-    return segment;
-  });
+  const donutSegments = top3.map(([emotion, count], i) => ({
+    emotion,
+    count,
+    pct: total > 0 ? Math.round((count / total) * 100) : 0,
+    offset: top3.slice(0, i).reduce(
+      (sum, [, c]) => sum + (total > 0 ? Math.round((c / total) * 100) : 0),
+      0
+    ),
+    color: donutColors[i],
+  }));
 
-  // --- AI insight ---
-  let aiInsight: { summary: string; tips: string[] };
-  try {
-    aiInsight = await generateAIInsight(posts);
-  } catch {
+  // --- AI insight (cached, refreshes every 3 posts) ---
+  let aiInsight: AIInsight;
+  if (!userId) {
     aiInsight = {
-      summary:
-        "สัปดาห์นี้มีความรู้สึกหลากหลาย ทุกอารมณ์ล้วนมีคุณค่าและเป็นส่วนหนึ่งของการเติบโต",
-      tips: [
-        "ให้เวลากับตัวเองในการรับรู้และยอมรับความรู้สึก",
-        "พูดคุยกับคนที่ไว้วางใจเพื่อแบ่งเบาความรู้สึก",
-      ],
+      summary: "กรุณาเข้าสู่ระบบเพื่อดูการวิเคราะห์ของคุณ",
+      tips: ["ลงชื่อเข้าใช้ด้วย Google เพื่อเริ่มบันทึกความรู้สึก", "ข้อมูลของคุณจะถูกเก็บเป็นความลับ"],
+      quote: "ทุกความรู้สึกที่เกิดขึ้น คือสัญญาณของการมีอยู่และการเติบโตที่งดงามเสมอ",
     };
+  } else {
+    try {
+      aiInsight = await getOrRefreshInsight(userId, posts);
+    } catch {
+      aiInsight = {
+        summary: "สัปดาห์นี้มีความรู้สึกหลากหลาย ทุกอารมณ์ล้วนมีคุณค่าและเป็นส่วนหนึ่งของการเติบโต",
+        tips: [
+          "ให้เวลากับตัวเองในการรับรู้และยอมรับความรู้สึก",
+          "พูดคุยกับคนที่ไว้วางใจเพื่อแบ่งเบาความรู้สึก",
+        ],
+        quote: "ทุกความรู้สึกที่เกิดขึ้น คือสัญญาณของการมีอยู่และการเติบโตที่งดงามเสมอ",
+      };
+    }
   }
 
   return (
@@ -388,15 +426,13 @@ export default async function InsightPage() {
           </div>
         </div>
 
-        {/* Quote */}
+        {/* AI Quote */}
         <section className="bg-[#e8d8a8]/20 rounded-xl p-10 text-center relative overflow-hidden group border border-black grainy-texture">
           <span className="material-symbols-outlined text-[#8a7a50] mb-4 text-4xl group-hover:scale-110 transition-transform duration-500 block">
             format_quote
           </span>
           <p className="text-2xl font-[var(--font-display)] font-semibold text-[#5a4a25] leading-snug">
-            "ทุกความรู้สึกที่เกิดขึ้น คือสัญญาณของการมีอยู่{" "}
-            <br className="hidden md:block" />
-            และการเติบโตที่งดงามเสมอ"
+            &ldquo;{aiInsight.quote}&rdquo;
           </p>
           <p className="mt-4 text-[#8a7a50] font-medium">- Sabaijai AI Buddy</p>
         </section>

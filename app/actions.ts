@@ -1,8 +1,21 @@
 "use server";
 
-import { db } from "@/lib/firebase-admin";
+import { db, auth } from "@/lib/firebase-admin";
 import { revalidatePath } from "next/cache";
 import { FieldValue } from "firebase-admin/firestore";
+import { cookies } from "next/headers";
+
+async function getSessionUserId(): Promise<string | null> {
+  try {
+    const cookieStore = await cookies();
+    const sessionCookie = cookieStore.get("__session")?.value;
+    if (!sessionCookie) return null;
+    const decoded = await auth.verifySessionCookie(sessionCookie);
+    return decoded.uid;
+  } catch {
+    return null;
+  }
+}
 
 export type MoodColor =
   | "red"
@@ -16,7 +29,9 @@ export type MoodColor =
   | "indigo"
   | "purple"
   | "pink"
-  | "gray";
+  | "gray"
+  | "black"
+  | "white";
 
 const moodLabels: Record<MoodColor, string> = {
   red:    "แดง",
@@ -31,18 +46,21 @@ const moodLabels: Record<MoodColor, string> = {
   purple: "ม่วง",
   pink:   "ชมพู",
   gray:   "เทา",
+  black:  "ดำ",
+  white:  "ขาว"
 };
 
-export async function submitPost(formData: FormData) {
+export async function submitPost(formData: FormData): Promise<{ aiText: string; triggerPopup: boolean }> {
   const content = (formData.get("content") as string)?.trim();
   const mood = formData.get("mood") as MoodColor;
 
-  if (!content || !mood) return;
+  if (!content || !mood) return { aiText: "", triggerPopup: false };
 
-  // Detect emotion with AI (fire-and-forget on failure)
+  // Detect emotion + generate AI response in a single Gemini call
   let emotion: string | null = null;
   let emotionScore: number | null = null;
   let triggerPopup = false;
+  let aiText = "";
   try {
     const base = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
     const res = await fetch(`${base}/api/detect-emotion`, {
@@ -55,10 +73,13 @@ export async function submitPost(formData: FormData) {
       emotion = data.category ?? null;
       emotionScore = data.score ?? null;
       triggerPopup = data.trigger_popup ?? false;
+      aiText = data.aiText ?? "";
     }
   } catch {
     // emotion stays null — not blocking
   }
+
+  const userId = await getSessionUserId();
 
   await db.collection("posts").add({
     content,
@@ -66,10 +87,13 @@ export async function submitPost(formData: FormData) {
     moodLabel: moodLabels[mood] ?? mood,
     candles: 0,
     createdAt: FieldValue.serverTimestamp(),
+    ...(userId ? { userId } : {}),
     ...(emotion ? { emotion, emotionScore, triggerPopup } : {}),
+    ...(aiText ? { aiResponse: aiText } : {}),
   });
 
   revalidatePath("/home");
+  return { aiText, triggerPopup };
 }
 
 export async function lightCandle(postId: string) {

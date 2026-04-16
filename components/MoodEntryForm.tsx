@@ -3,15 +3,6 @@
 import { useRef, useState } from "react";
 import { submitPost, type MoodColor } from "@/app/actions";
 
-// Placeholder responses — swap out when API is ready
-const AI_RESPONSES = [
-  "เรารับรู้ถึงความเหนื่อยล้าของคุณนะ การใจดีกับตัวเองบ้างก็เป็นเรื่องที่สำคัญพอๆ กับการใจดีกับคนอื่นเลย วันนี้คุณเก่งมากแล้วที่ผ่านมันมาได้ พักผ่อนให้เต็มที่นะ",
-  "ขอบคุณที่เล่าให้ฟังนะ ความรู้สึกของคุณมีความหมายเสมอ ไม่ว่าจะดีหรือไม่ดี แค่ได้ระบายออกมาก็ช่วยได้มากเลย",
-  "วันนี้อาจจะหนักหน่อย แต่คุณมาถึงตรงนี้ได้แล้ว นั่นคือความกล้าหาญอย่างหนึ่งนะ อยู่เคียงข้างคุณเสมอ",
-  "ทุกความรู้สึกล้วนมีเหตุผล อย่าโกรธตัวเองที่รู้สึกแบบนี้นะ ให้เวลาตัวเองบ้าง แล้วทุกอย่างจะค่อยๆ ดีขึ้นเอง",
-  "ได้ยินคุณอยู่นะ บางวันแค่ลุกขึ้นมาก็เป็นความสำเร็จแล้ว คุณทำได้ดีมากเลย",
-];
-
 const moods: { value: MoodColor; hex: string }[] = [
   { value: "red",    hex: "#e85d4a" },
   { value: "orange", hex: "#f0883a" },
@@ -25,6 +16,8 @@ const moods: { value: MoodColor; hex: string }[] = [
   { value: "purple", hex: "#9048d0" },
   { value: "pink",   hex: "#e050a0" },
   { value: "gray",   hex: "#909090" },
+  { value: "black",  hex: "#332b1f" },
+  { value: "white",  hex: "#f8f8f8" }
 ];
 
 export default function MoodEntryForm() {
@@ -36,16 +29,14 @@ export default function MoodEntryForm() {
     if (!selectedMood) return;
     formData.set("mood", selectedMood);
     setPending(true);
-    await submitPost(formData);
+    window.dispatchEvent(new CustomEvent("aiListening"));
+    const { aiText } = await submitPost(formData);
     window.dispatchEvent(new CustomEvent("newPost"));
     setPending(false);
     setSelectedMood(null);
     formRef.current?.reset();
 
-    // Signal feed card to start listening, then reveal response
-    window.dispatchEvent(new CustomEvent("aiListening"));
-    await new Promise((r) => setTimeout(r, 1200));
-    const text = AI_RESPONSES[Math.floor(Math.random() * AI_RESPONSES.length)];
+    const text = aiText || "ขอบคุณที่เล่าให้ฟังนะ อยู่เคียงข้างคุณเสมอเลย 🌟";
     window.dispatchEvent(new CustomEvent("aiResponse", { detail: { text } }));
   }
 
@@ -59,7 +50,7 @@ export default function MoodEntryForm() {
             วันนี้คุณรู้สึกเป็นสีอะไร?
           </label>
 
-          <div className="flex flex-wrap gap-2.5">
+          <div className="flex flex-wrap gap-2.5 mt-2 ">
             {moods.map(({ value, hex }) => (
               <button
                 key={value}
@@ -89,7 +80,7 @@ export default function MoodEntryForm() {
             name="content"
             rows={3}
             required
-            className="w-full bg-[#e8dfc6] rounded-lg px-5 py-4 border border-black outline-none focus:ring-2 focus:ring-[#4e7c5f]/20 text-[#332b1f] placeholder:text-[#c8baa8] resize-none transition-all"
+            className="w-full mt-2 bg-[#e8dfc6] rounded-lg px-5 py-4 border border-black outline-none focus:ring-2 focus:ring-[#4e7c5f]/20 text-[#332b1f] placeholder:text-[#c8baa8] resize-none transition-all"
             placeholder="วันนี้เจอเรื่องอะไรมาบ้าง..."
           />
         </div>
@@ -98,9 +89,9 @@ export default function MoodEntryForm() {
           <button
             type="submit"
             disabled={pending || !selectedMood}
-            className="px-8 py-3 bg-linear-to-r from-[#7c5cbf] to-[#6b4aad] text-white rounded-full border border-black font-semibold shadow-md hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
+            className="px-8 py-4 mt-2 bg-linear-to-r from-[#7c5cbf] to-[#6b4aad] text-white rounded-full border border-black font-semibold shadow-md hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            {pending ? "กำลังส่ง..." : "ส่งขึ้นสู่ดวงดาว"}
+            {pending ? "กำลังส่ง..." : "แชร์ความรู้สึก"}
           </button>
         </div>
       </div>

@@ -4,6 +4,7 @@ import MoodEntryForm from "@/components/MoodEntryForm";
 import CandleButton from "@/components/CandleButton";
 import StarrySky from "@/components/StarrySky";
 import FlyingImages from "@/components/FlyingImages";
+import PostAiResponse from "@/components/PostAiResponse";
 import { db } from "@/lib/firebase-admin";
 
 type EmotionCategory =
@@ -90,7 +91,7 @@ export default async function HomePage() {
       <Header />
       <main className="pt-16 pb-32">
         {/* Sky Banner */}
-        <section className="relative w-full h-100 sky-gradient overflow-hidden flex flex-col justify-center items-center px-6">
+        <section className="relative w-full h-64 sky-gradient overflow-hidden flex flex-col justify-center items-center px-6 border border-black">
 
           {/* Dark overlay for depth */}
           <div className="absolute inset-0 bg-black/15 pointer-events-none" />
@@ -116,11 +117,11 @@ export default async function HomePage() {
           <FlyingImages />
 
           <div className="relative z-10 text-center space-y-5 max-w-xl">
-            <h2 className="text-4xl md:text-6xl [font-family:var(--font-display)] font-bold text-white/90 leading-tight drop-shadow-lg" style={{ textShadow: "0 2px 24px rgba(80,60,160,0.5)" }}>
-              ✨คุณไม่ได้อยู่คนเดียวนะ✨
+            <h2 className="text-2xl md:text-6xl [font-family:var(--font-display)] font-bold text-white/90 leading-tight drop-shadow-lg" style={{ textShadow: "0 2px 24px rgba(80,60,160,0.5)" }}>
+              คุณไม่ได้อยู่คนเดียวนะ🌟
             </h2>
-            <p className="text-white/60 text-xl [font-family:var(--font-display)] leading-relaxed" style={{ textShadow: "0 1px 12px rgba(60,40,120,0.4)" }}>
-              พื้นที่ตรงนี้จะเป็นไหล่ให้คุณพักพิง <br/> ในวันที่โลกข้างนอกมันใจร้ายเกินไป 𖤐
+            <p className="text-white/60 text-lg [font-family:var(--font-display)] leading-relaxed" style={{ textShadow: "0 1px 12px rgba(60,40,120,0.4)" }}>
+              พื้นที่ตรงนี้จะเป็นไหล่ให้คุณพักพิง <br/> ในวันที่โลกข้างนอกมันใจร้ายเกินไป
             </p>
           </div>
         </section>
@@ -135,8 +136,8 @@ export default async function HomePage() {
         {/* Feed Section */}
         <section className="max-w-4xl mx-auto mt-12 px-6 space-y-8">
           <div className="flex items-end justify-between border-b-2 border-[#f5eed8] pb-4">
-            <h3 className="text-2xl [font-family:var(--font-display)] font-bold text-[#4e7c5f]">
-              ความรู้สึกจากผู้คน
+            <h3 className="text-2xl [font-family:var(--font-display)] font-bold text-[#6f624e]">
+              ข้อความล่าสุด
             </h3>
             <span className="text-sm text-[#9a8b7a]">
               {posts.length > 0 ? `${posts.length} โพสต์` : "ยังไม่มีโพสต์"}
@@ -145,7 +146,7 @@ export default async function HomePage() {
 
           <div className="grid grid-cols-1 gap-8">
             {posts.length === 0 && (
-              <div className="text-center py-16 text-[#9a8b7a]">
+              <div className="text-center py-16 text-black/30">
                 <span className="material-symbols-outlined text-5xl mb-4 block opacity-30">
                   auto_awesome
                 </span>
@@ -193,24 +194,13 @@ export default async function HomePage() {
                     &ldquo;{post.content}&rdquo;
                   </p>
 
-                  {/* AI response sub-section — tinted with the post's mood colour */}
-                  <div
-                    className="rounded-2xl px-5 py-4 space-y-3 border border-black"
-                    style={{ background: colors.blob.replace("0.18", "0.18") }}
-                  >
-                    <p className="text-sm font-semibold flex items-center gap-2" style={{ color: colors.dot + "bb" }}>
-                      <span
-                        className="w-7 h-7 rounded-full flex items-center justify-center text-base shrink-0"
-                        style={{ background: colors.blob.replace("0.18", "0.28") }}
-                      >
-                        🤖
-                      </span>
-                      ข้อความจากใจ Sabaijai:
-                    </p>
-                    <p className="text-sm leading-relaxed text-[#332b1f] font-light pl-9 opacity-40 italic">
-                      กำลังรับฟัง... {/* replace with API response */}
-                    </p>
-                  </div>
+                  <PostAiResponse
+                    postId={post.id}
+                    content={post.content}
+                    emotion={emotion}
+                    blobColor={colors.blob}
+                    dotColor={colors.dot}
+                  />
 
                   <div className="flex justify-end">
                     <CandleButton postId={post.id} initialCount={post.candles} />

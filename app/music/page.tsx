@@ -130,7 +130,7 @@ export default function MusicPage() {
                   type="text"
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
-                  placeholder="Paste YouTube link here..."
+                  placeholder="Paste YouTube link..."
                   className="w-full bg-black/12 rounded-xl px-5 py-4 text-[#332b1f] placeholder-[#6b5e4d]/50 border border-black/40 outline-none focus:ring-1 focus:ring-black/30 transition-all"
                 />
                 <div className="absolute right-3 top-1/2 -translate-y-1/2">
