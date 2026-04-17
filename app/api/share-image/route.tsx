@@ -3,13 +3,14 @@ import { readFileSync } from "fs";
 import { join } from "path";
 
 export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url);
+  const { searchParams } = new URL(request.url);
   const youtubeId = searchParams.get("youtubeId") ?? "";
   const title = searchParams.get("title") ?? "";
   const caption = searchParams.get("caption") ?? "";
 
   const thumbnailUrl = `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`;
-  const logoSrc = `${origin}/2.png`;
+  const logoData = readFileSync(join(process.cwd(), "public", "2.png"));
+  const logoSrc = `data:image/png;base64,${logoData.toString("base64")}`;
 
   const maliFontData = readFileSync(join(process.cwd(), "public", "Mali-Regular.ttf"));
 
