@@ -60,6 +60,7 @@ export default function MusicPage() {
   const [feed, setFeed] = useState<FeedItem[]>([]);
   const [likedIds, setLikedIds] = useState<Set<string>>(new Set());
   const [sharing, setSharing] = useState(false);
+  const [sharingId, setSharingId] = useState<string | null>(null);
 
   // Real-time listener
   useEffect(() => {
@@ -312,24 +313,62 @@ export default function MusicPage() {
                           &ldquo;{item.caption}&rdquo;
                         </p>
                       )}
-                      <button
-                        onClick={() => handleLike(item.id)}
-                        className="flex items-center gap-1.5 text-xs font-medium text-[#6b5e4d] hover:text-[#a8364b] transition-colors"
-                      >
-                        <span
-                          className="material-symbols-outlined text-lg"
-                          style={
-                            liked
-                              ? { fontVariationSettings: "'FILL' 1", color: "#a8364b" }
-                              : undefined
-                          }
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={() => handleLike(item.id)}
+                          className="flex items-center gap-1.5 text-xs font-medium text-[#6b5e4d] hover:text-[#a8364b] transition-colors"
                         >
-                          favorite
-                        </span>
-                        <span className={liked ? "text-[#a8364b]" : ""}>
-                          {item.likes}
-                        </span>
-                      </button>
+                          <span
+                            className="material-symbols-outlined text-lg"
+                            style={
+                              liked
+                                ? { fontVariationSettings: "'FILL' 1", color: "#a8364b" }
+                                : undefined
+                            }
+                          >
+                            favorite
+                          </span>
+                          <span className={liked ? "text-[#a8364b]" : ""}>
+                            {item.likes}
+                          </span>
+                        </button>
+                        {item.youtubeId && (
+                          <button
+                            disabled={sharingId === item.id}
+                            onClick={async () => {
+                              setSharingId(item.id);
+                              try {
+                                const params = new URLSearchParams({
+                                  youtubeId: item.youtubeId!,
+                                  title: item.title,
+                                  caption: item.caption ?? "",
+                                });
+                                const res = await fetch(`/api/share-image?${params}`);
+                                if (!res.ok) throw new Error("failed");
+                                const blob = await res.blob();
+                                const file = new File([blob], "sabaijai-song.png", { type: "image/png" });
+                                if (navigator.canShare?.({ files: [file] })) {
+                                  await navigator.share({ files: [file], title: "Sabaijai" });
+                                } else {
+                                  const url = URL.createObjectURL(blob);
+                                  const a = document.createElement("a");
+                                  a.href = url;
+                                  a.download = "sabaijai-song.png";
+                                  a.click();
+                                  URL.revokeObjectURL(url);
+                                }
+                              } finally {
+                                setSharingId(null);
+                              }
+                            }}
+                            className="flex items-center gap-1.5 text-xs font-medium text-[#6b5e4d] hover:text-[#4e7c5f] transition-colors disabled:opacity-40"
+                          >
+                            <span className="material-symbols-outlined text-lg">
+                              {sharingId === item.id ? "progress_activity" : "share"}
+                            </span>
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 );

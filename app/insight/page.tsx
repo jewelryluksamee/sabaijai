@@ -191,7 +191,6 @@ export default async function InsightPage() {
   const dominantMoodInfo = moodColorMap[dominantMood] ?? moodColorMap.green;
 
   // --- Donut chart segments ---
-  const donutColors = ["#4a6b45", "#4e7c5f", "#8a7a50"];
   const donutSegments = top3.map(([emotion, count], i) => ({
     emotion,
     count,
@@ -200,7 +199,7 @@ export default async function InsightPage() {
       (sum, [, c]) => sum + (total > 0 ? Math.round((c / total) * 100) : 0),
       0
     ),
-    color: donutColors[i],
+    color: emotionConfig[emotion].chartColor,
   }));
 
   // --- AI insight (cached, refreshes every 3 posts) ---
@@ -295,24 +294,31 @@ export default async function InsightPage() {
                   ยังไม่มีบันทึกในสัปดาห์นี้
                 </p>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-4">
                   {donutSegments.map((seg) => (
-                    <div
-                      key={seg.emotion}
-                      className="flex items-center justify-between"
-                    >
-                      <div className="flex items-center gap-2">
-                        <div
-                          className="w-3 h-3 rounded-full"
-                          style={{ backgroundColor: seg.color }}
-                        />
-                        <span className="text-sm font-medium text-[#6b5e4d]">
-                          {emotionConfig[seg.emotion].label}
+                    <div key={seg.emotion} className="space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span
+                            className="material-symbols-outlined text-base"
+                            style={{ color: seg.color, fontVariationSettings: "'FILL' 1", fontSize: "18px" }}
+                          >
+                            {emotionConfig[seg.emotion].icon}
+                          </span>
+                          <span className="text-sm font-medium text-[#6b5e4d]">
+                            {emotionConfig[seg.emotion].label}
+                          </span>
+                        </div>
+                        <span className="text-sm font-bold text-[#332b1f]">
+                          {seg.pct}%
                         </span>
                       </div>
-                      <span className="text-sm font-bold text-[#332b1f]">
-                        {seg.pct}%
-                      </span>
+                      <div className="h-2 rounded-full bg-black/8 overflow-hidden">
+                        <div
+                          className="h-full rounded-full transition-all"
+                          style={{ width: `${seg.pct}%`, backgroundColor: seg.color }}
+                        />
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -321,16 +327,22 @@ export default async function InsightPage() {
           </div>
 
           {/* Dominant Emotion */}
-          <div className="md:col-span-4 bg-[#d4e8c8] rounded-xl p-8 flex flex-col justify-between border border-black relative overflow-hidden grainy-texture">
+          <div
+            className="md:col-span-4 rounded-xl p-8 flex flex-col justify-between border border-black relative overflow-hidden grainy-texture"
+            style={{ backgroundColor: total > 0 ? dominantConfig.chartColor + "30" : "#d4e8c8" }}
+          >
             <div className="relative z-10">
-              <span className="bg-white/40 backdrop-blur-md px-3 py-1 rounded-full border border-black text-[10px] font-bold text-[#4a6b45] uppercase tracking-widest">
+              <span
+                className="px-3 py-1 rounded-full border border-black text-[10px] font-bold uppercase tracking-widest"
+                style={{ backgroundColor: total > 0 ? dominantConfig.chartColor + "40" : "#fff", color: total > 0 ? dominantConfig.color : "#4a6b45" }}
+              >
                 Dominant
               </span>
-              <h3 className="text-2xl font-bold font-[var(--font-display)] text-[#2a4d32] mt-4">
+              <h3 className="text-2xl font-bold font-[var(--font-display)] text-[#332b1f] mt-4">
                 อารมณ์หลัก:{" "}
                 {total > 0 ? dominantConfig.label : "–"}
               </h3>
-              <p className="text-[#2a4d32]/80 mt-2 text-sm">
+              <p className="text-[#332b1f]/70 mt-2 text-sm">
                 {total > 0
                   ? `อารมณ์ "${dominantConfig.label}" ปรากฏมากที่สุดในสัปดาห์นี้ (${dominantEntry[1]} ครั้ง)`
                   : "เริ่มบันทึกความรู้สึกเพื่อดูอารมณ์หลักของคุณ"}
@@ -338,8 +350,8 @@ export default async function InsightPage() {
             </div>
             <div className="relative z-10 flex justify-end">
               <span
-                className="material-symbols-outlined text-6xl text-[#4a6b45] opacity-40"
-                style={{ fontVariationSettings: "'FILL' 1" }}
+                className="material-symbols-outlined text-6xl opacity-40"
+                style={{ fontVariationSettings: "'FILL' 1", color: total > 0 ? dominantConfig.chartColor : "#4a6b45" }}
               >
                 {total > 0 ? dominantConfig.icon : "spa"}
               </span>
