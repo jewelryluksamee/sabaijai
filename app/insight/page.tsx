@@ -240,7 +240,7 @@ export default async function InsightPage() {
           </p>
           {total > 0 && (
             <p className="text-[#9a8b7a] text-sm">
-              วิเคราะห์จาก {total} บันทึกในช่วง 7 วันที่ผ่านมา
+              วิเคราะห์จาก {total} บันทึกในช่วง 3 วันที่ผ่านมา
             </p>
           )}
         </section>
