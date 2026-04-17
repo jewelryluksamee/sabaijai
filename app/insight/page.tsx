@@ -365,7 +365,7 @@ export default async function InsightPage() {
               </h3>
               <p className="text-white/80 text-sm mt-1">
                 {total > 0
-                  ? `สี${dominantMoodInfo.thaiName}สื่อถึง${dominantMoodInfo.meaning}`
+                  ? `สี${dominantMoodInfo.thaiName}`
                   : "เริ่มบันทึกเพื่อดูสีประจำตัวของคุณ"}
               </p>
             </div>

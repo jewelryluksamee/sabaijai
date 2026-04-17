@@ -66,7 +66,6 @@ async function getPosts(): Promise<Post[]> {
   const snapshot = await db
     .collection("posts")
     .orderBy("createdAt", "desc")
-    .limit(20)
     .get();
 
   return snapshot.docs.map((doc) => {
@@ -177,7 +176,7 @@ export default async function HomePage() {
                       </span>
                     </div>
                     <span
-                      className="self-start flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full border"
+                      className="self-start flex items-center gap-2 text-xs font-semibold px-2.5 py-1 rounded-full border"
                       style={{
                         background: emotionConfig[emotion].bg,
                         color: emotionConfig[emotion].text,
