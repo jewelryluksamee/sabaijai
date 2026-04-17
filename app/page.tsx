@@ -1,5 +1,5 @@
 import Image from "next/image";
-import GoogleSignIn from "@/components/GoogleSignIn";
+import ConsentSignIn from "@/components/ConsentSignIn";
 
 export default function LoginPage() {
   return (
@@ -67,15 +67,8 @@ export default function LoginPage() {
               </p>
             </div>
 
-            <GoogleSignIn />
+            <ConsentSignIn />
 
-            <p className="text-center text-[11px] text-[#b8a898] leading-relaxed">
-              การเข้าสู่ระบบถือว่าคุณยอมรับ{" "} <br/>
-              <span className="underline decoration-dotted cursor-pointer hover:text-[#6b5e4d] transition-colors">
-                นโยบายความเป็นส่วนตัว
-              </span>
-              {" "}ของเรา
-            </p>
           </div>
         </div>
 
