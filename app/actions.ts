@@ -103,3 +103,23 @@ export async function lightCandle(postId: string) {
 
   revalidatePath("/home");
 }
+
+export async function submitFeedback(formData: FormData): Promise<{ ok: boolean }> {
+  const rating = parseInt(formData.get("rating") as string, 10);
+  const category = (formData.get("category") as string)?.trim();
+  const message = (formData.get("message") as string)?.trim();
+
+  if (!rating || !category) return { ok: false };
+
+  const userId = await getSessionUserId();
+
+  await db.collection("feedback").add({
+    rating,
+    category,
+    message: message || null,
+    createdAt: FieldValue.serverTimestamp(),
+    ...(userId ? { userId } : {}),
+  });
+
+  return { ok: true };
+}

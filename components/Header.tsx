@@ -1,5 +1,6 @@
 import Image from "next/image";
 import SignOutButton from "@/components/SignOutButton";
+import FeedbackButton from "@/components/FeedbackButton";
 
 export default function Header() {
   return (
@@ -17,7 +18,8 @@ export default function Header() {
           </span>
         </div>
       </div>
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3">
+        <FeedbackButton />
         <SignOutButton />
       </div>
     </header>
