@@ -1,6 +1,7 @@
 import Image from "next/image";
 import SignOutButton from "@/components/SignOutButton";
 import FeedbackButton from "@/components/FeedbackButton";
+import BackgroundMusic from "@/components/BackgroundMusic";
 
 export default function Header() {
   return (
@@ -19,6 +20,7 @@ export default function Header() {
         </div>
       </div>
       <div className="flex items-center gap-3">
+        <BackgroundMusic />
         <FeedbackButton />
         <SignOutButton />
       </div>
