@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from "react";
 
 declare global {
   interface Window {
-    YT: typeof YT;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    YT: any;
     onYouTubeIframeAPIReady: () => void;
   }
 }
@@ -14,7 +15,8 @@ const PLAYLIST = "CJnu6sOwN_o,HGl75kurxok";
 const VOLUME = 20;
 
 export default function BackgroundMusic() {
-  const playerRef = useRef<YT.Player | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const playerRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [playing, setPlaying] = useState(false);
   const [ready, setReady] = useState(false);
@@ -36,13 +38,15 @@ export default function BackgroundMusic() {
           rel: 0,
         },
         events: {
-          onReady(e) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          onReady(e: any) {
             e.target.setVolume(VOLUME);
             e.target.playVideo();
             setReady(true);
             setPlaying(true);
           },
-          onStateChange(e) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          onStateChange(e: any) {
             setPlaying(e.data === window.YT.PlayerState.PLAYING);
           },
         },
