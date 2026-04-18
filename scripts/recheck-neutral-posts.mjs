@@ -1,23 +1,20 @@
+// Run: node --env-file=.env.local scripts/recheck-neutral-posts.mjs
+import { initializeApp, cert, getApps } from "firebase-admin/app";
+import { getFirestore } from "firebase-admin/firestore";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-export type EmotionCategory =
-  | "HAPPY"
-  | "SAD"
-  | "ANGRY"
-  | "ANXIOUS"
-  | "BURNOUT"
-  | "NEUTRAL"
-  | "CRITICAL_RISK";
+if (!getApps().length) {
+  initializeApp({
+    credential: cert({
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+    }),
+  });
+}
 
-export type EmotionResult = {
-  category: EmotionCategory;
-  score: number;
-  reason: string;
-  trigger_popup: boolean;
-  aiText: string;
-};
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+const db = getFirestore();
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 const SYSTEM_PROMPT = `คุณคือ Sabaijai AI ทำสองหน้าที่พร้อมกันในคำตอบเดียว:
 
@@ -42,26 +39,61 @@ const SYSTEM_PROMPT = `คุณคือ Sabaijai AI ทำสองหน้�
 ตอบเป็น JSON เท่านั้น:
 {"category":"NEUTRAL","score":0.0,"reason":"brief reason","trigger_popup":false,"aiText":"ข้อความตอบกลับภาษาไทย"}`;
 
-export async function POST(request: Request) {
-  const { content } = await request.json();
+const model = genAI.getGenerativeModel({
+  model: "gemini-3.1-flash-lite-preview",
+  systemInstruction: SYSTEM_PROMPT,
+});
 
-  if (!content || typeof content !== "string") {
-    return Response.json({ error: "Missing content" }, { status: 400 });
-  }
-
-  const model = genAI.getGenerativeModel({
-    model: "gemini-3.1-flash-lite-preview",
-    systemInstruction: SYSTEM_PROMPT,
-  });
-
+async function detectEmotion(content) {
   const result = await model.generateContent(content);
   const raw = result.response.text().trim();
-
   const jsonMatch = raw.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) {
-    return Response.json({ error: "Invalid AI response" }, { status: 502 });
+  if (!jsonMatch) throw new Error("Invalid AI response");
+  return JSON.parse(jsonMatch[0]);
+}
+
+async function sleep(ms) {
+  return new Promise((r) => setTimeout(r, ms));
+}
+
+async function main() {
+  const snapshot = await db
+    .collection("posts")
+    .where("emotion", "==", "NEUTRAL")
+    .get();
+
+  console.log(`พบโพส NEUTRAL ทั้งหมด ${snapshot.size} โพส`);
+
+  let updated = 0;
+  let skipped = 0;
+  let failed = 0;
+
+  for (const doc of snapshot.docs) {
+    const { content } = doc.data();
+    if (!content) { skipped++; continue; }
+
+    try {
+      const result = await detectEmotion(content);
+      if (result.category !== "NEUTRAL") {
+        await doc.ref.update({
+          emotion: result.category,
+          emotionScore: result.score,
+          triggerPopup: result.trigger_popup ?? false,
+          aiResponse: result.aiText,
+        });
+        console.log(`✓ ${doc.id}: NEUTRAL → ${result.category}`);
+        updated++;
+      } else {
+        skipped++;
+      }
+      await sleep(200); // rate limit
+    } catch (err) {
+      console.error(`✗ ${doc.id}:`, err.message);
+      failed++;
+    }
   }
 
-  const parsed: EmotionResult = JSON.parse(jsonMatch[0]);
-  return Response.json(parsed);
+  console.log(`\nเสร็จแล้ว: อัปเดต ${updated} | ยังเฉยๆ ${skipped} | ผิดพลาด ${failed}`);
 }
+
+main().catch(console.error);
