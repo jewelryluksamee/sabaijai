@@ -19,6 +19,7 @@ const LABELS: Record<Period, string> = { today: "วันนี้", month: "�
 
 export default function HomeFeed({ posts }: { posts: Post[] }) {
   const [period, setPeriod] = useState<Period>("all");
+  const [revealed, setRevealed] = useState<Set<string>>(new Set());
 
   const now = new Date();
   const filtered = posts.filter((p) => {
@@ -77,34 +78,65 @@ export default function HomeFeed({ posts }: { posts: Post[] }) {
                 className="absolute top-0 right-0 w-24 h-24 rounded-bl-[100%] transition-all group-hover:scale-110"
                 style={{ backgroundColor: colors.blob }}
               />
-              <div className="flex flex-col gap-5">
-                <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: colors.dot }} />
-                  <span className="text-xs text-[#9a8b7a]">{timeAgo(post.createdAt)} • ไม่ระบุตัวตน</span>
+              <div className="relative">
+                <div className={emotion === "CRITICAL_RISK" && !revealed.has(post.id) ? "blur-md select-none pointer-events-none" : ""}>
+                  <div className="flex flex-col gap-5">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: colors.dot }} />
+                      <span className="text-xs text-[#9a8b7a]">{timeAgo(post.createdAt)} • ไม่ระบุตัวตน</span>
+                    </div>
+                    <span
+                      className="self-start flex items-center gap-2 text-xs font-semibold px-2.5 py-1 rounded-full border"
+                      style={{ background: emotionConfig[emotion].bg, color: emotionConfig[emotion].text, borderColor: emotionConfig[emotion].border }}
+                    >
+                      <span className="material-symbols-outlined text-sm leading-none" style={{ fontSize: "14px" }}>
+                        {emotionConfig[emotion].icon}
+                      </span>
+                      {emotionConfig[emotion].label}
+                    </span>
+                  </div>
+                  <p className="text-lg leading-relaxed text-[#332b1f] font-light mt-5">
+                    &ldquo;{post.content}&rdquo;
+                  </p>
+                  <div className="mt-6">
+                    <PostAiResponse
+                      postId={post.id}
+                      content={post.content}
+                      emotion={emotion}
+                      blobColor={colors.blob}
+                      dotColor={colors.dot}
+                    />
+                  </div>
                 </div>
-                <span
-                  className="self-start flex items-center gap-2 text-xs font-semibold px-2.5 py-1 rounded-full border"
-                  style={{ background: emotionConfig[emotion].bg, color: emotionConfig[emotion].text, borderColor: emotionConfig[emotion].border }}
-                >
-                  <span className="material-symbols-outlined text-sm leading-none" style={{ fontSize: "14px" }}>
-                    {emotionConfig[emotion].icon}
-                  </span>
-                  {emotionConfig[emotion].label}
-                </span>
+
+                {emotion === "CRITICAL_RISK" && !revealed.has(post.id) && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <div className="flex flex-col items-center gap-2 bg-white/80 backdrop-blur-sm rounded-2xl px-6 py-4 border-2 border-red-400 shadow-[0_4px_20px_rgba(220,38,38,0.15)] text-center">
+                      {emotion === "CRITICAL_RISK" ? (
+                        <>
+                          <span className="material-symbols-outlined text-red-500" style={{ fontSize: "28px" }}>warning</span>
+                          <p className="text-sm font-semibold text-red-600">เนื้อหาที่ละเอียดอ่อน</p>
+                          <p className="text-xs text-[#9a8b7a]">โพสต์นี้อาจมีเนื้อหาที่กระทบความรู้สึก</p>
+                        </>
+                      ) : (
+                        <>
+                          <span className="material-symbols-outlined text-[#6f624e]" style={{ fontSize: "28px" }}>visibility_off</span>
+                          <p className="text-sm font-semibold text-[#332b1f]">ซ่อนเนื้อหาไว้</p>
+                          <p className="text-xs text-[#9a8b7a]">กดเพื่อเปิดอ่านโพสต์นี้</p>
+                        </>
+                      )}
+                      <button
+                        onClick={() => setRevealed((prev) => new Set(prev).add(post.id))}
+                        className="mt-1 px-4 py-1.5 rounded-full bg-[#332b1f] text-white text-xs font-semibold cursor-pointer active:scale-95 transition-transform"
+                      >
+                        กดเพื่อดู
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
-              <p className="text-lg leading-relaxed text-[#332b1f] font-light">
-                &ldquo;{post.content}&rdquo;
-              </p>
 
-              <PostAiResponse
-                postId={post.id}
-                content={post.content}
-                emotion={emotion}
-                blobColor={colors.blob}
-                dotColor={colors.dot}
-              />
-
-              {emotion === "CRITICAL_RISK" && (
+              {emotion === "CRITICAL_RISK" && revealed.has(post.id) && (
                 <a
                   href="tel:1323"
                   className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-semibold text-white border border-red-700 active:scale-95 transition-transform"
