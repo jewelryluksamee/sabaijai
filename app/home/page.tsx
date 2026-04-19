@@ -15,6 +15,7 @@ type Post = {
   candles: number;
   createdAt: string;
   emotion?: EmotionCategory;
+  hasProfanity?: boolean;
 };
 
 async function getPosts(): Promise<Post[]> {
@@ -33,6 +34,7 @@ async function getPosts(): Promise<Post[]> {
       candles: data.candles ?? 0,
       createdAt: data.createdAt?.toDate?.()?.toISOString() ?? new Date().toISOString(),
       emotion: data.emotion ?? undefined,
+      hasProfanity: data.hasProfanity ?? false,
     };
   });
 }

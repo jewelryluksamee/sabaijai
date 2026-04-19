@@ -13,7 +13,7 @@ function timeAgo(iso: string): string {
   return `${Math.floor(diff / 86400)} วันที่แล้ว`;
 }
 
-type Post = { id: string; content: string; mood: string; moodLabel: string; candles: number; createdAt: string; emotion?: EmotionCategory };
+type Post = { id: string; content: string; mood: string; moodLabel: string; candles: number; createdAt: string; emotion?: EmotionCategory; hasProfanity?: boolean };
 type Period = "today" | "month" | "all";
 const LABELS: Record<Period, string> = { today: "วันนี้", month: "เดือนนี้", all: "ทั้งหมด" };
 
@@ -69,6 +69,7 @@ export default function HomeFeed({ posts }: { posts: Post[] }) {
         {filtered.map((post) => {
           const colors = moodPalette[post.mood] ?? moodPalette.blue;
           const emotion = (post.emotion ?? "NEUTRAL") as EmotionCategory;
+          const sensitive = emotion === "CRITICAL_RISK" || !!post.hasProfanity;
           return (
             <div
               key={post.id}
@@ -79,7 +80,7 @@ export default function HomeFeed({ posts }: { posts: Post[] }) {
                 style={{ backgroundColor: colors.blob }}
               />
               <div className="relative">
-                <div className={emotion === "CRITICAL_RISK" && !revealed.has(post.id) ? "blur-md select-none pointer-events-none" : ""}>
+                <div className={sensitive && !revealed.has(post.id) ? "blur-md select-none pointer-events-none" : ""}>
                   <div className="flex flex-col gap-5">
                     <div className="flex items-center gap-2">
                       <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: colors.dot }} />
@@ -109,9 +110,9 @@ export default function HomeFeed({ posts }: { posts: Post[] }) {
                   </div>
                 </div>
 
-                {emotion === "CRITICAL_RISK" && !revealed.has(post.id) && (
+                {sensitive && !revealed.has(post.id) && (
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <div className="flex flex-col items-center gap-2 bg-white/80 backdrop-blur-sm rounded-2xl px-6 py-4 border-2 border-red-400 shadow-[0_4px_20px_rgba(220,38,38,0.15)] text-center">
+                    <div className={`flex flex-col items-center gap-2 bg-white/80 backdrop-blur-sm rounded-2xl px-6 py-4 border-2 shadow-[0_4px_20px_rgba(0,0,0,0.1)] text-center ${emotion === "CRITICAL_RISK" ? "border-red-400 shadow-[0_4px_20px_rgba(220,38,38,0.15)]" : "border-amber-400 shadow-[0_4px_20px_rgba(217,119,6,0.15)]"}`}>
                       {emotion === "CRITICAL_RISK" ? (
                         <>
                           <span className="material-symbols-outlined text-red-500" style={{ fontSize: "28px" }}>warning</span>
@@ -120,9 +121,9 @@ export default function HomeFeed({ posts }: { posts: Post[] }) {
                         </>
                       ) : (
                         <>
-                          <span className="material-symbols-outlined text-[#6f624e]" style={{ fontSize: "28px" }}>visibility_off</span>
-                          <p className="text-sm font-semibold text-[#332b1f]">ซ่อนเนื้อหาไว้</p>
-                          <p className="text-xs text-[#9a8b7a]">กดเพื่อเปิดอ่านโพสต์นี้</p>
+                          <span className="material-symbols-outlined text-amber-500" style={{ fontSize: "28px" }}>block</span>
+                          <p className="text-sm font-semibold text-amber-700">มีคำหยาบ</p>
+                          <p className="text-xs text-[#9a8b7a]">โพสต์นี้มีภาษาที่ไม่เหมาะสม</p>
                         </>
                       )}
                       <button

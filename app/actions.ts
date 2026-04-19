@@ -60,6 +60,7 @@ export async function submitPost(formData: FormData): Promise<{ aiText: string; 
   let emotion: string | null = null;
   let emotionScore: number | null = null;
   let triggerPopup = false;
+  let hasProfanity = false;
   let aiText = "";
   try {
     const base = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
@@ -73,6 +74,7 @@ export async function submitPost(formData: FormData): Promise<{ aiText: string; 
       emotion = data.category ?? null;
       emotionScore = data.score ?? null;
       triggerPopup = data.trigger_popup ?? false;
+      hasProfanity = data.has_profanity ?? false;
       aiText = data.aiText ?? "";
     }
   } catch {
@@ -88,7 +90,7 @@ export async function submitPost(formData: FormData): Promise<{ aiText: string; 
     candles: 0,
     createdAt: FieldValue.serverTimestamp(),
     ...(userId ? { userId } : {}),
-    ...(emotion ? { emotion, emotionScore, triggerPopup } : {}),
+    ...(emotion ? { emotion, emotionScore, triggerPopup, hasProfanity } : {}),
     ...(aiText ? { aiResponse: aiText } : {}),
   });
 
