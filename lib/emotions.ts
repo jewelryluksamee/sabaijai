@@ -33,6 +33,8 @@ export const moodColorMap: Record<string, { hex: string; thaiName: string; meani
   purple: { hex: "#9048d0", thaiName: "ม่วง",       meaning: "ความสร้างสรรค์และจินตนาการ",     icon: "auto_awesome" },
   pink:   { hex: "#e050a0", thaiName: "ชมพู",       meaning: "ความรักและความอ่อนโยน",           icon: "favorite" },
   gray:   { hex: "#909090", thaiName: "เทา",        meaning: "ความสงบเงียบและการพักผ่อน",       icon: "cloud" },
+  black:  { hex: "#332b1f", thaiName: "ดำ",         meaning: "ความลึกลับและความแข็งแกร่ง",      icon: "dark_mode" },
+  white:  { hex: "#f8f8f8", thaiName: "ขาว",        meaning: "ความบริสุทธิ์และความสงบ",         icon: "light_mode" },
 };
 
 export const moodPalette: Record<string, { blob: string; dot: string }> = {
@@ -48,4 +50,6 @@ export const moodPalette: Record<string, { blob: string; dot: string }> = {
   purple: { blob: "rgba(144,72,208,0.18)",  dot: "#9048d0" },
   pink:   { blob: "rgba(224,80,160,0.18)",  dot: "#e050a0" },
   gray:   { blob: "rgba(144,144,144,0.18)", dot: "#909090" },
+  black:  { blob: "rgba(51,43,31,0.18)",   dot: "#332b1f" },
+  white:  { blob: "rgba(232,223,198,0.35)", dot: "#c8baa8" },
 };

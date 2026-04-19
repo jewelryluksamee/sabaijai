@@ -15,30 +15,23 @@ if (!getApps().length) {
 
 const db = getFirestore();
 
-const TARGETS = [
-  { fragment: "ผมเองที่อยากปลอบคนคุยผมที่ยังลืมคนเก่าไม่ได้", emotion: "ANXIOUS" },
-  { fragment: "สุขภาพแย่ลงมากๆ เมื่อวานเกือบวูบ", emotion: "ANXIOUS" },
-  { fragment: "ไม่รู้จะเป็นตามที่หวังไว้มั้ย แต่ทำดีที่สุดแล้วนะ", emotion: "ANXIOUS" },
-];
-
 async function main() {
-  const snapshot = await db.collection("posts").orderBy("createdAt", "desc").limit(100).get();
+  const snapshot = await db.collection("posts").orderBy("createdAt", "desc").limit(1).get();
 
-  for (const target of TARGETS) {
-    const doc = snapshot.docs.find((d) => (d.data().content ?? "").includes(target.fragment));
-    if (!doc) {
-      console.log(`✗ ไม่พบโพส: "${target.fragment.slice(0, 40)}..."`);
-      continue;
-    }
-    const old = doc.data().emotion ?? "ไม่มี";
-    await doc.ref.update({
-      emotion: target.emotion,
-      emotionScore: 0.85,
-      triggerPopup: false,
-    });
-    console.log(`✓ ${doc.id}: ${old} → ${target.emotion}`);
-    console.log(`  "${doc.data().content.slice(0, 70)}"`);
+  if (snapshot.empty) {
+    console.log("✗ ไม่พบโพสใดเลย");
+    return;
   }
+
+  const doc = snapshot.docs[0];
+  const old = doc.data().emotion ?? "ไม่มี";
+  await doc.ref.update({
+    emotion: "BURNOUT",
+    emotionScore: 0.85,
+    triggerPopup: false,
+  });
+  console.log(`✓ ${doc.id}: ${old} → BURNOUT`);
+  console.log(`  "${doc.data().content.slice(0, 70)}"`);
 
   console.log("\nเสร็จแล้ว");
 }
