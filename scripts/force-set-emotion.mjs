@@ -18,6 +18,7 @@ const db = getFirestore();
 const TARGETS = [
   { fragment: "ผมเองที่อยากปลอบคนคุยผมที่ยังลืมคนเก่าไม่ได้", emotion: "ANXIOUS" },
   { fragment: "สุขภาพแย่ลงมากๆ เมื่อวานเกือบวูบ", emotion: "ANXIOUS" },
+  { fragment: "ไม่รู้จะเป็นตามที่หวังไว้มั้ย แต่ทำดีที่สุดแล้วนะ", emotion: "ANXIOUS" },
 ];
 
 async function main() {
