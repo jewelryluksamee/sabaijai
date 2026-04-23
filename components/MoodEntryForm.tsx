@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { submitPost, type MoodColor } from "@/app/actions";
 
 const moods: { value: MoodColor; hex: string }[] = [
@@ -21,6 +22,7 @@ const moods: { value: MoodColor; hex: string }[] = [
 ];
 
 export default function MoodEntryForm() {
+  const router = useRouter();
   const [selectedMood, setSelectedMood] = useState<MoodColor | null>(null);
   const [pending, setPending] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
@@ -39,6 +41,7 @@ export default function MoodEntryForm() {
 
       window.dispatchEvent(new CustomEvent("aiListening"));
       const { aiText } = await submitPost(formData);
+      router.refresh();
       window.dispatchEvent(new CustomEvent("newPost"));
       
       setSelectedMood(null);
