@@ -498,6 +498,110 @@ export default async function InsightPage() {
             )}
           </div>
 
+          {/* Grounding Exercises — shown only when critical risk detected */}
+          {criticalRiskCount > 0 && (
+            <div className="md:col-span-12 bg-white rounded-xl p-8 border border-black grainy-texture relative overflow-hidden">
+              <style>{`
+                @keyframes gr-core {
+                  0%, 100% { transform: scale(0.52); }
+                  33%       { transform: scale(1);    }
+                  66%       { transform: scale(1);    }
+                }
+                @keyframes gr-wave {
+                  0%, 100% { transform: scale(0.6);  opacity: 0.28; }
+                  33%       { transform: scale(1.08); opacity: 0.10; }
+                  66%       { transform: scale(1.08); opacity: 0.10; }
+                }
+                @keyframes gr-label-in {
+                  0%, 2%    { opacity: 0; }
+                  6%, 27%   { opacity: 1; }
+                  31%, 100% { opacity: 0; }
+                }
+                @keyframes gr-label-hold {
+                  0%, 33%   { opacity: 0; }
+                  37%, 62%  { opacity: 1; }
+                  66%, 100% { opacity: 0; }
+                }
+                @keyframes gr-label-out {
+                  0%, 66%   { opacity: 0; }
+                  70%, 95%  { opacity: 1; }
+                  99%, 100% { opacity: 0; }
+                }
+                .gr-core { animation: gr-core        12s ease-in-out infinite; }
+                .gr-wave { animation: gr-wave        12s ease-in-out infinite; }
+                .gr-in   { animation: gr-label-in    12s ease-in-out infinite; }
+                .gr-hold { animation: gr-label-hold  12s ease-in-out infinite; }
+                .gr-out  { animation: gr-label-out   12s ease-in-out infinite; }
+              `}</style>
+
+              <div className="mb-8">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-red-500">เครื่องมือช่วยเหลือเร่งด่วน</p>
+                <h3 className="text-xl font-bold font-[var(--font-display)] text-[#332b1f]">แบบฝึก Grounding</h3>
+              </div>
+
+              <div className="flex flex-col md:flex-row items-center gap-12">
+
+                {/* Breathing Circle */}
+                <div className="flex-shrink-0 flex flex-col items-center gap-5">
+                  <div className="relative w-52 h-52 flex items-center justify-center">
+                    {/* Fixed boundary ring */}
+                    <div className="absolute w-52 h-52 rounded-full border-2 border-red-200" />
+                    {/* Soft outer wave */}
+                    <div className="gr-wave absolute w-44 h-44 rounded-full bg-red-100" />
+                    {/* Core fill — clearly expands */}
+                    <div className="gr-core absolute w-44 h-44 rounded-full" style={{ background: "rgba(192,0,0,0.20)", boxShadow: "0 0 0 4px rgba(192,0,0,0.10)" }} />
+                    {/* Center disc */}
+                    <div className="relative z-10 w-[72px] h-[72px] rounded-full bg-white border-2 border-red-300 shadow-md flex items-center justify-center">
+                      <div className="relative w-full h-full flex items-center justify-center">
+                        <span className="gr-in  absolute text-[11px] font-bold text-red-700 text-center leading-tight">หายใจ<br/>เข้า</span>
+                        <span className="gr-hold absolute text-[11px] font-bold text-red-700 text-center leading-tight">กลั้น<br/>ไว้</span>
+                        <span className="gr-out  absolute text-[11px] font-bold text-red-700 text-center leading-tight">หายใจ<br/>ออก</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Phase timing row */}
+                  <div className="flex items-center gap-1">
+                    {(["หายใจเข้า · 4s", "กลั้น · 4s", "หายใจออก · 4s"] as const).map((label, i) => (
+                      <span key={i} className="px-2 py-1 rounded-full bg-red-50 border border-red-200 text-[10px] font-bold text-red-600">
+                        {label}
+                      </span>
+                    ))}
+                  </div>
+                  <p className="text-[11px] text-[#9a8b7a] text-center max-w-[160px] leading-relaxed">
+                    Box breathing ช่วยลดความตื่นตระหนกและดึงร่างกายกลับสู่สมดุล
+                  </p>
+                </div>
+
+                {/* 5-4-3-2-1 Technique */}
+                <div className="flex-1">
+                  <p className="text-sm font-bold text-[#332b1f] mb-4">เทคนิค 5-4-3-2-1 ช่วยดึงสติกลับสู่ปัจจุบัน</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-5 gap-2">
+                    {[
+                      { num: 5, sense: "สิ่งที่มองเห็น", icon: "visibility", desc: "มองรอบตัวและนับ 5 สิ่ง" },
+                      { num: 4, sense: "เสียงที่ได้ยิน", icon: "hearing",    desc: "ฟังรอบข้างและนับ 4 เสียง" },
+                      { num: 3, sense: "สิ่งที่สัมผัส",  icon: "back_hand",  desc: "แตะสิ่งของและรู้สึก 3 อย่าง" },
+                      { num: 2, sense: "กลิ่น",           icon: "air",        desc: "สูดดมและจำ 2 กลิ่น" },
+                      { num: 1, sense: "รสชาติ",          icon: "restaurant", desc: "รับรู้รสชาติ 1 อย่าง" },
+                    ].map(({ num, sense, icon, desc }) => (
+                      <div key={num} className="flex flex-col items-center gap-2 p-3 rounded-xl border border-black bg-[#fdf5f5] text-center">
+                        <div className="w-8 h-8 rounded-full bg-red-100 border border-black flex items-center justify-center text-sm font-bold text-red-700">
+                          {num}
+                        </div>
+                        <span className="material-symbols-outlined text-red-500 text-base" style={{ fontVariationSettings: "'FILL' 1" }}>
+                          {icon}
+                        </span>
+                        <p className="text-[11px] font-bold text-[#332b1f]">{sense}</p>
+                        <p className="text-[10px] text-[#6b5e4d] leading-snug">{desc}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          )}
+
           {/* AI Insight */}
           <div className="md:col-span-12 bg-[#f5eed8] rounded-xl p-8 space-y-6 relative border border-black">
             <div className="flex items-center gap-3">
