@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useQuiz } from "@/lib/quiz-context";
 
 const navItems = [
   { href: "/home", label: "Home", icon: "auto_awesome" },
@@ -11,9 +12,11 @@ const navItems = [
 
 export default function BottomNav() {
   const pathname = usePathname();
+  const { quizOpen } = useQuiz();
+  if (quizOpen) return null;
 
   return (
-    <nav className="fixed bottom-0 w-full z-50 flex justify-around items-end px-8 pb-3 bg-linear-to-b from-[#a89cc8]/85 via-[#8070b8]/85 to-[#5548a0]/90 backdrop-blur-xl h-20 rounded-t-[3rem] border border-black shadow-[0_-4px_32px_rgba(52,45,120,0.25)]">
+    <nav className="fixed bottom-0 w-full z-60 flex justify-around items-end px-8 pb-3 bg-linear-to-b from-[#a89cc8]/85 via-[#8070b8]/85 to-[#5548a0]/90 backdrop-blur-xl h-20 rounded-t-[3rem] border border-black shadow-[0_-4px_32px_rgba(52,45,120,0.25)]">
       {navItems.map((item) => {
         const isActive = pathname === item.href;
         return (

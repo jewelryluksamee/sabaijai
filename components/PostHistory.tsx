@@ -36,7 +36,7 @@ export default function PostHistory({ posts }: { posts: PostData[] }) {
       <summary className="flex items-center justify-between cursor-pointer list-none select-none mb-4">
         <h3 className="text-2xl font-bold font-[var(--font-display)] text-[#332b1f]">
           บันทึกย้อนหลัง
-          <span className="ml-2 text-base font-normal text-[#9a8b7a]">({filtered.length})</span>
+          <span className="ml-2 text-base font-normal text-[#9a8b7a]" suppressHydrationWarning>({filtered.length})</span>
         </h3>
         <span className="material-symbols-outlined text-[#9a8b7a] transition-transform duration-200 group-open/history:rotate-180">
           expand_more
@@ -90,7 +90,7 @@ export default function PostHistory({ posts }: { posts: PostData[] }) {
                         </span>
                         {cfg.label}
                       </span>
-                      <span className="text-[11px] text-[#9a8b7a]">{dateStr} · {timeStr}</span>
+                      <span className="text-[11px] text-[#9a8b7a]" suppressHydrationWarning>{dateStr} · {timeStr}</span>
                     </div>
                     <p className="text-sm text-[#332b1f] leading-relaxed">{post.content}</p>
                   </div>

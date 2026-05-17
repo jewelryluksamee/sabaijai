@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Be_Vietnam_Pro, Itim, Mali, Dancing_Script, Mitr } from "next/font/google";
 import "./globals.css";
 import { MusicProvider } from "@/components/MusicProvider";
+import { QuizProvider } from "@/lib/quiz-context";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -62,7 +63,7 @@ export default function RootLayout({
         />
       </head>
       <body className={`${mali.className} bg-[#fdf8ef] text-[#332b1f] antialiased min-h-screen`}>
-        <MusicProvider>{children}</MusicProvider>
+        <QuizProvider><MusicProvider>{children}</MusicProvider></QuizProvider>
       </body>
     </html>
   );

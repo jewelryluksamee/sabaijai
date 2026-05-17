@@ -1,6 +1,8 @@
 import Header from "@/components/Header";
-import PostHistory from "@/components/PostHistory";
 import BottomNav from "@/components/BottomNav";
+import PostHistory from "@/components/PostHistory";
+import QuizHistory, { type QuizEntry } from "@/components/QuizHistory";
+import InsightQuizSection from "@/components/InsightQuizSection";
 import { db, auth } from "@/lib/firebase-admin";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { cookies } from "next/headers";
@@ -41,6 +43,24 @@ async function getUserPosts(userId: string, since?: Date): Promise<PostData[]> {
       emotion: (data.emotion ?? "NEUTRAL") as EmotionCategory,
       createdAt: data.createdAt?.toDate?.() ?? new Date(),
       aiResponse: data.aiResponse ?? undefined,
+    };
+  });
+}
+
+async function getQuizHistory(userId: string): Promise<QuizEntry[]> {
+  const snapshot = await db
+    .collection("quizResults")
+    .doc(userId)
+    .collection("entries")
+    .orderBy("takenAt", "desc")
+    .limit(30)
+    .get();
+  return snapshot.docs.map((doc) => {
+    const data = doc.data();
+    return {
+      id: doc.id,
+      takenAt: data.takenAt?.toDate?.()?.toISOString() ?? new Date().toISOString(),
+      scores: data.scores ?? {},
     };
   });
 }
@@ -150,9 +170,10 @@ export default async function InsightPage() {
   const sevenDaysAgo = new Date(now);
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
-  const [weeklyPosts, allPosts] = await Promise.all([
+  const [weeklyPosts, allPosts, quizEntries] = await Promise.all([
     userId ? getUserPosts(userId, sevenDaysAgo) : Promise.resolve([]),
     userId ? getUserPosts(userId) : Promise.resolve([]),
+    userId ? getQuizHistory(userId) : Promise.resolve([]),
   ]);
 
   // stats always based on 7-day posts
@@ -252,6 +273,9 @@ export default async function InsightPage() {
               วิเคราะห์จาก {total} บันทึกในช่วง 7 วันที่ผ่านมา
             </p>
           )}
+          <div className="pt-3">
+            <InsightQuizSection />
+          </div>
         </section>
 
         {/* Bento Grid */}
@@ -646,6 +670,9 @@ export default async function InsightPage() {
 
         {/* Post History */}
         <PostHistory posts={allPosts.map((p) => ({ ...p, createdAt: p.createdAt.toISOString() }))} />
+
+        {/* Quiz History */}
+        <QuizHistory entries={quizEntries} />
 
         {/* AI Quote */}
         <section className="bg-[#e8d8a8]/20 rounded-xl p-10 text-center relative overflow-hidden group border border-black grainy-texture">
