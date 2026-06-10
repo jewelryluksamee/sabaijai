@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { FieldValue } from "firebase-admin/firestore";
 import { cookies } from "next/headers";
 
-async function getSessionUserId(): Promise<string | null> {
+export async function getSessionUserId(): Promise<string | null> {
   try {
     const cookieStore = await cookies();
     const sessionCookie = cookieStore.get("__session")?.value;
@@ -104,6 +104,20 @@ export async function lightCandle(postId: string) {
   });
 
   revalidatePath("/home");
+}
+
+export async function deletePost(postId: string): Promise<{ ok: boolean; error?: string }> {
+  const userId = await getSessionUserId();
+  if (!userId) return { ok: false, error: "Not authenticated" };
+
+  const docRef = db.collection("posts").doc(postId);
+  const snap = await docRef.get();
+  if (!snap.exists) return { ok: false, error: "Post not found" };
+  if (snap.data()?.userId !== userId) return { ok: false, error: "Not authorized" };
+
+  await docRef.delete();
+  revalidatePath("/home");
+  return { ok: true };
 }
 
 export async function submitFeedback(formData: FormData): Promise<{ ok: boolean }> {

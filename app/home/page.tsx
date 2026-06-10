@@ -6,6 +6,7 @@ import FlyingImages from "@/components/FlyingImages";
 import HomeFeed from "@/components/HomeFeed";
 import { db } from "@/lib/firebase-admin";
 import { type EmotionCategory } from "@/lib/emotions";
+import { getSessionUserId } from "@/app/actions";
 
 type Post = {
   id: string;
@@ -16,6 +17,7 @@ type Post = {
   createdAt: string;
   emotion?: EmotionCategory;
   hasProfanity?: boolean;
+  userId?: string;
 };
 
 async function getPosts(): Promise<Post[]> {
@@ -35,12 +37,13 @@ async function getPosts(): Promise<Post[]> {
       createdAt: data.createdAt?.toDate?.()?.toISOString() ?? new Date().toISOString(),
       emotion: data.emotion ?? undefined,
       hasProfanity: data.hasProfanity ?? false,
+      userId: data.userId ?? undefined,
     };
   });
 }
 
 export default async function HomePage() {
-  const posts = await getPosts();
+  const [posts, currentUserId] = await Promise.all([getPosts(), getSessionUserId()]);
 
   return (
     <>
@@ -89,7 +92,7 @@ export default async function HomePage() {
           </div>
         </div>
 
-        <HomeFeed posts={posts} />
+        <HomeFeed posts={posts} currentUserId={currentUserId} />
       </main>
 
       <BottomNav />

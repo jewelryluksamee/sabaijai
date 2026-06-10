@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import CandleButton from "@/components/CandleButton";
 import PostAiResponse from "@/components/PostAiResponse";
 import { type EmotionCategory, emotionBadgeConfig as emotionConfig, moodPalette } from "@/lib/emotions";
+import { deletePost } from "@/app/actions";
 
 function timeAgo(iso: string): string {
   const diff = (Date.now() - new Date(iso).getTime()) / 1000;
@@ -13,16 +15,29 @@ function timeAgo(iso: string): string {
   return `${Math.floor(diff / 86400)} วันที่แล้ว`;
 }
 
-type Post = { id: string; content: string; mood: string; moodLabel: string; candles: number; createdAt: string; emotion?: EmotionCategory; hasProfanity?: boolean };
+type Post = { id: string; content: string; mood: string; moodLabel: string; candles: number; createdAt: string; emotion?: EmotionCategory; hasProfanity?: boolean; userId?: string };
 type Period = "today" | "month" | "all";
 const LABELS: Record<Period, string> = { today: "วันนี้", month: "เดือนนี้", all: "ทั้งหมด" };
 
-export default function HomeFeed({ posts }: { posts: Post[] }) {
+export default function HomeFeed({ posts, currentUserId }: { posts: Post[]; currentUserId?: string | null }) {
+  const router = useRouter();
   const [period, setPeriod] = useState<Period>("all");
   const [revealed, setRevealed] = useState<Set<string>>(new Set());
+  const [deletingIds, setDeletingIds] = useState<Set<string>>(new Set());
+  const [localDeleted, setLocalDeleted] = useState<Set<string>>(new Set());
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+
+  async function handleDelete(postId: string) {
+    setDeletingIds((prev) => new Set(prev).add(postId));
+    setLocalDeleted((prev) => new Set(prev).add(postId));
+    await deletePost(postId);
+    setDeletingIds((prev) => { const s = new Set(prev); s.delete(postId); return s; });
+    router.refresh();
+  }
 
   const now = new Date();
   const filtered = posts.filter((p) => {
+    if (localDeleted.has(p.id)) return false;
     const d = new Date(p.createdAt);
     if (period === "today") return d.toDateString() === now.toDateString();
     if (period === "month") { const c = new Date(now); c.setDate(c.getDate() - 30); return d >= c; }
@@ -148,7 +163,36 @@ export default function HomeFeed({ posts }: { posts: Post[] }) {
                 </a>
               )}
 
-              <div className="flex justify-end">
+              <div className="flex items-center justify-between">
+                {currentUserId && post.userId === currentUserId ? (
+                  confirmDeleteId === post.id ? (
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-[#a8364b] font-medium">ลบโพสต์นี้?</span>
+                      <button
+                        onClick={() => { setConfirmDeleteId(null); handleDelete(post.id); }}
+                        disabled={deletingIds.has(post.id)}
+                        className="px-3 py-1 rounded-full text-xs font-bold bg-[#a8364b] text-white disabled:opacity-40"
+                      >
+                        {deletingIds.has(post.id) ? "กำลังลบ..." : "ลบเลย"}
+                      </button>
+                      <button
+                        onClick={() => setConfirmDeleteId(null)}
+                        className="px-3 py-1 rounded-full text-xs font-bold bg-black/8 text-[#6b5e4d]"
+                      >
+                        ยกเลิก
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => setConfirmDeleteId(post.id)}
+                      title="ลบโพสต์นี้"
+                      className="flex items-center gap-1 px-2.5 py-1.5 rounded-full text-xs text-[#6b5e4d]/50 hover:text-[#a8364b] hover:bg-[#a8364b]/8 transition-all"
+                    >
+                      <span className="material-symbols-outlined text-sm leading-none" style={{ fontSize: "16px" }}>delete</span>
+                      ลบ
+                    </button>
+                  )
+                ) : <span />}
                 <CandleButton postId={post.id} initialCount={post.candles} />
               </div>
             </div>
