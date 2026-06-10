@@ -164,7 +164,7 @@ export default function HomeFeed({ posts, currentUserId }: { posts: Post[]; curr
               )}
 
               <div className="flex items-center justify-between">
-                {currentUserId && post.userId === currentUserId ? (
+                {currentUserId ? (
                   confirmDeleteId === post.id ? (
                     <div className="flex items-center gap-2">
                       <span className="text-xs text-[#a8364b] font-medium">ลบโพสต์นี้?</span>

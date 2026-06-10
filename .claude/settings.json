@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e \"const ytsr = require\\('ytsr'\\); ytsr\\('healing music', {limit: 3}\\).then\\(r => console.log\\(JSON.stringify\\(r.items[0], null, 2\\)\\)\\).catch\\(e => console.error\\(e.message\\)\\)\")",
+      "Bash(npm uninstall *)",
+      "Bash(curl -s \"http://localhost:3000/api/youtube-search?q=แอบดี\")",
+      "Bash(curl -sv \"http://localhost:3000/api/youtube-search?q=%E0%B9%81%E0%B8%AD%E0%B8%9A%E0%B8%94%E0%B8%B5\")"
+    ]
+  }
+}

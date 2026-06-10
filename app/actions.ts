@@ -111,9 +111,6 @@ export async function deletePost(postId: string): Promise<{ ok: boolean; error?:
   if (!userId) return { ok: false, error: "Not authenticated" };
 
   const docRef = db.collection("posts").doc(postId);
-  const snap = await docRef.get();
-  if (!snap.exists) return { ok: false, error: "Post not found" };
-  if (snap.data()?.userId !== userId) return { ok: false, error: "Not authorized" };
 
   await docRef.delete();
   revalidatePath("/home");

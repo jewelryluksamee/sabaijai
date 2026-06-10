@@ -523,7 +523,7 @@ export default function MusicPage() {
                     ) : (
                       <button
                         onClick={() => setConfirmDeleteId(item.id)}
-                        className="absolute top-1.5 right-1.5 z-10 w-5 h-5 rounded-full bg-black/40 backdrop-blur-sm text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-[#a8364b]/80"
+                        className="absolute top-1.5 right-1.5 z-10 w-5 h-5 rounded-full bg-black/40 backdrop-blur-sm text-white flex items-center justify-center hover:bg-[#a8364b]/80 transition-colors"
                         title="ลบเพลงนี้"
                       >
                         <span className="material-symbols-outlined" style={{ fontSize: "13px" }}>close</span>
