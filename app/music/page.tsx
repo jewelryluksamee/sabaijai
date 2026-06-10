@@ -14,6 +14,7 @@ import {
   serverTimestamp,
   Timestamp,
 } from "firebase/firestore";
+import { onAuthStateChanged, type User } from "firebase/auth";
 import { db, auth } from "@/lib/firebase-client";
 import Header from "@/components/Header";
 import BottomNav from "@/components/BottomNav";
@@ -125,6 +126,9 @@ export default function MusicPage() {
   /* sharing */
   const [sharingId, setSharingId]   = useState<string | null>(null);
 
+  /* auth */
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+
   /* delete */
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
@@ -132,6 +136,9 @@ export default function MusicPage() {
   const searchRef    = useRef<HTMLDivElement>(null);
   const debounceRef  = useRef<ReturnType<typeof setTimeout> | null>(null);
   const skipSearchRef = useRef(false);
+
+  /* ── Auth state ── */
+  useEffect(() => onAuthStateChanged(auth, setCurrentUser), []);
 
   /* ── Real-time feed ── */
   useEffect(() => {
@@ -500,34 +507,36 @@ export default function MusicPage() {
                   <div key={item.id}
                     className="break-inside-avoid mb-3 bg-white/60 hover:bg-white/80 border border-black/80 rounded-2xl overflow-hidden transition-all hover:shadow-lg group relative">
 
-                    {/* Delete × button */}
-                    {confirmDeleteId === item.id ? (
-                      <div className="absolute inset-x-0 top-0 z-20 bg-[#1a150d]/85 backdrop-blur-sm px-3 py-2 flex items-center justify-between">
-                        <span className="text-white text-[11px] font-medium">ลบเพลงนี้?</span>
-                        <div className="flex items-center gap-1.5">
-                          <button
-                            onClick={() => { setConfirmDeleteId(null); handleDeleteSong(item.id); }}
-                            disabled={deletingId === item.id}
-                            className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#a8364b] text-white disabled:opacity-50"
-                          >
-                            {deletingId === item.id ? "..." : "ลบเลย"}
-                          </button>
-                          <button
-                            onClick={() => setConfirmDeleteId(null)}
-                            className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-white/20 text-white"
-                          >
-                            ยกเลิก
-                          </button>
+                    {/* Delete × button — only visible to the post owner */}
+                    {currentUser?.uid === item.userId && (
+                      confirmDeleteId === item.id ? (
+                        <div className="absolute inset-x-0 top-0 z-20 bg-[#1a150d]/85 backdrop-blur-sm px-3 py-2 flex items-center justify-between">
+                          <span className="text-white text-[11px] font-medium">ลบเพลงนี้?</span>
+                          <div className="flex items-center gap-1.5">
+                            <button
+                              onClick={() => { setConfirmDeleteId(null); handleDeleteSong(item.id); }}
+                              disabled={deletingId === item.id}
+                              className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#a8364b] text-white disabled:opacity-50"
+                            >
+                              {deletingId === item.id ? "..." : "ลบเลย"}
+                            </button>
+                            <button
+                              onClick={() => setConfirmDeleteId(null)}
+                              className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-white/20 text-white"
+                            >
+                              ยกเลิก
+                            </button>
+                          </div>
                         </div>
-                      </div>
-                    ) : (
-                      <button
-                        onClick={() => setConfirmDeleteId(item.id)}
-                        className="absolute top-1.5 right-1.5 z-10 w-5 h-5 rounded-full bg-black/40 backdrop-blur-sm text-white flex items-center justify-center hover:bg-[#a8364b]/80 transition-colors"
-                        title="ลบเพลงนี้"
-                      >
-                        <span className="material-symbols-outlined" style={{ fontSize: "13px" }}>close</span>
-                      </button>
+                      ) : (
+                        <button
+                          onClick={() => setConfirmDeleteId(item.id)}
+                          className="absolute top-1.5 right-1.5 z-10 w-5 h-5 rounded-full bg-black/40 backdrop-blur-sm text-white flex items-center justify-center hover:bg-[#a8364b]/80 transition-colors"
+                          title="ลบเพลงนี้"
+                        >
+                          <span className="material-symbols-outlined" style={{ fontSize: "13px" }}>close</span>
+                        </button>
+                      )
                     )}
 
                     {/* Thumbnail / inline player */}
