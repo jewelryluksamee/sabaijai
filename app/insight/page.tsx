@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 import BottomNav from "@/components/BottomNav";
-import PostHistory from "@/components/PostHistory";
+import MoodCalendar from "@/components/MoodCalendar";
 import QuizHistory, { type QuizEntry } from "@/components/QuizHistory";
 import InsightQuizSection from "@/components/InsightQuizSection";
 import { db, auth } from "@/lib/firebase-admin";
@@ -255,10 +255,18 @@ export default async function InsightPage() {
     }
   }
 
+  const serializedAllPosts = allPosts.map((p) => ({
+    createdAt: p.createdAt.toISOString(),
+    emotion: p.emotion,
+    mood: p.mood,
+  }));
+
   return (
     <>
       <Header />
       <main className="pt-24 pb-32 px-6 max-w-5xl mx-auto space-y-10">
+        
+
         {/* Hero */}
         <section className="space-y-2">
           <h2 className="text-4xl md:text-5xl font-[var(--font-display)] font-extrabold tracking-tight text-[#332b1f]">
@@ -268,14 +276,9 @@ export default async function InsightPage() {
             สำรวจอารมณ์ของคุณผ่านข้อมูลและพลังของ AI
             เพื่อความเข้าใจตนเองที่ลึกซึ้งยิ่งขึ้น
           </p>
-          {total > 0 && (
-            <p className="text-[#9a8b7a] text-sm">
-              วิเคราะห์จาก {total} บันทึกในช่วง 7 วันที่ผ่านมา
-            </p>
-          )}
-          <div className="pt-3">
-            <InsightQuizSection />
-          </div>
+  
+          {/* Mood Calendar — top of page */}
+        <MoodCalendar posts={serializedAllPosts} />
         </section>
 
         {/* Bento Grid */}
@@ -667,9 +670,6 @@ export default async function InsightPage() {
           </div>
 
         </div>
-
-        {/* Post History */}
-        <PostHistory posts={allPosts.map((p) => ({ ...p, createdAt: p.createdAt.toISOString() }))} />
 
         {/* Quiz History */}
         <QuizHistory entries={quizEntries} />
