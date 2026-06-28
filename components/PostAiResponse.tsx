@@ -36,7 +36,7 @@ export default function PostAiResponse({ postId, content, emotion, blobColor, do
 
   return (
     <div
-      className="rounded-2xl px-5 py-4 space-y-3 border border-black"
+      className="rounded-2xl px-5 py-4 space-y-3 shadow-sm"
       style={{ background: blobColor }}
     >
       <p className="text-sm font-semibold flex items-center gap-2" style={{ color: dotColor + "bb" }}>

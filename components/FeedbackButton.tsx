@@ -48,10 +48,9 @@ export default function FeedbackButton() {
       <button
         onClick={() => setOpen(true)}
         aria-label="ให้ feedback"
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/30 text-white/80 hover:bg-white/10 active:scale-95 transition-all cursor-pointer text-sm font-medium"
+        className="w-11 h-11 flex items-center justify-center rounded-2xl bg-white/75 backdrop-blur-md border border-white/60 shadow-[0_4px_24px_rgba(123,111,255,0.18)] text-[#7B6FFF] hover:bg-white/95 hover:scale-105 hover:shadow-[0_6px_28px_rgba(123,111,255,0.28)] active:scale-95 transition-all cursor-pointer"
       >
-        <span className="material-symbols-outlined" style={{ fontSize: "16px" }}>rate_review</span>
-        <span className="hidden sm:inline">Feedback</span>
+        <span className="material-symbols-outlined" style={{ fontSize: "20px" }}>rate_review</span>
       </button>
 
       {/* Modal — portalled to document.body to escape header's stacking context */}
@@ -62,7 +61,7 @@ export default function FeedbackButton() {
         >
           {/* Modal */}
           <div
-            className="bg-white w-full max-w-md rounded-2xl border border-black shadow-[0_8px_40px_rgba(0,0,0,0.18)] overflow-hidden"
+            className="bg-white w-full max-w-md rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.18)] overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
@@ -135,11 +134,11 @@ export default function FeedbackButton() {
                         key={c.value}
                         type="button"
                         onClick={() => setCategory(c.value)}
-                        className="flex items-center gap-2 px-3 py-2.5 rounded-xl border text-sm font-medium transition-colors cursor-pointer"
+                        className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer shadow-sm"
                         style={
                           category === c.value
-                            ? { borderColor: "#332b1f", backgroundColor: "#332b1f", color: "#fff" }
-                            : { borderColor: "#e0d8cc", backgroundColor: "#faf8f4", color: "#6f624e" }
+                            ? { backgroundColor: "#332b1f", color: "#fff" }
+                            : { backgroundColor: "#faf8f4", color: "#6f624e" }
                         }
                       >
                         <span className="material-symbols-outlined" style={{ fontSize: "16px" }}>{c.icon}</span>
@@ -168,7 +167,7 @@ export default function FeedbackButton() {
                   <button
                     type="button"
                     onClick={handleClose}
-                    className="flex-1 py-3 rounded-xl border border-[#e0d8cc] bg-[#faf8f4] text-[#6f624e] font-semibold text-sm active:scale-95 transition-all cursor-pointer"
+                    className="flex-1 py-3 rounded-xl shadow-sm bg-[#faf8f4] text-[#6f624e] font-semibold text-sm active:scale-95 transition-all cursor-pointer"
                   >
                     ยกเลิก
                   </button>

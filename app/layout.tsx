@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Be_Vietnam_Pro, Itim, Mali, Dancing_Script, Mitr } from "next/font/google";
 import "./globals.css";
-import { MusicProvider } from "@/components/MusicProvider";
 import { QuizProvider } from "@/lib/quiz-context";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -62,8 +61,8 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
         />
       </head>
-      <body className={`${mali.className} bg-[#fdf8ef] text-[#332b1f] antialiased min-h-screen`}>
-        <QuizProvider><MusicProvider>{children}</MusicProvider></QuizProvider>
+      <body className={`${mali.className} bg-linear-to-b from-[#E8E2FF] to-[#F8F6FF] text-[#1E1B3A] antialiased min-h-screen`}>
+        <QuizProvider>{children}</QuizProvider>
       </body>
     </html>
   );

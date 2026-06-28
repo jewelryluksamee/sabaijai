@@ -39,7 +39,7 @@ export default function GoogleSignIn() {
       <button
         onClick={handleGoogleSignIn}
         disabled={loading}
-        className="w-full h-13 bg-white border border-black rounded-2xl flex items-center justify-center gap-3 hover:bg-[#f8fdf9] hover:shadow-md transition-all duration-300 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]"
+        className="w-full h-13 bg-white shadow-sm rounded-2xl flex items-center justify-center gap-3 hover:bg-[#f8fdf9] hover:shadow-md transition-all duration-300 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]"
       >
         {loading ? (
           <span className="w-5 h-5 border-2 border-[#3d6b4e]/20 border-t-[#3d6b4e] rounded-full animate-spin" />

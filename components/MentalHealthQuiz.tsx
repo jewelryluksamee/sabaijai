@@ -213,7 +213,7 @@ export default function MentalHealthQuiz() {
       {/* Trigger button */}
       <button
         onClick={handleOpen}
-        className="inline-flex items-center gap-2 px-5 py-3 rounded-xl border border-black bg-white text-[#332b1f] font-semibold text-sm shadow-sm hover:bg-[#f5f0e8] active:scale-95 transition-all"
+        className="inline-flex items-center gap-2 px-5 py-3 rounded-xl shadow-sm bg-white text-[#332b1f] font-semibold text-sm shadow-sm hover:bg-[#f5f0e8] active:scale-95 transition-all"
       >
         ทำแบบทดสอบสุขภาพใจ
       </button>
@@ -228,7 +228,7 @@ export default function MentalHealthQuiz() {
           />
 
           {/* Sheet */}
-          <div className="relative z-10 w-full sm:max-w-lg bg-white sm:rounded-2xl rounded-t-2xl shadow-2xl flex flex-col max-h-[92dvh] overflow-hidden border border-black">
+          <div className="relative z-10 w-full sm:max-w-lg bg-white sm:rounded-2xl rounded-t-2xl shadow-2xl flex flex-col max-h-[92dvh] overflow-hidden shadow-sm">
             {/* Progress bar */}
             <div className="h-1 bg-[#e5e5e5] w-full flex-shrink-0">
               <div
@@ -276,13 +276,13 @@ export default function MentalHealthQuiz() {
                     </p>
                   </div>
 
-                  <div className="bg-[#f5f0e8] rounded-xl p-4 border border-black text-sm text-[#6b5e4d] leading-relaxed">
+                  <div className="bg-[#f5f0e8] rounded-xl p-4 shadow-sm text-sm text-[#6b5e4d] leading-relaxed">
                     <p className="font-semibold text-[#332b1f] mb-2">วิธีตอบ</p>
                     <p className="mb-3">กรุณาเลือกตอบโดยอิงจากความรู้สึกใน <span className="font-bold">2–4 สัปดาห์ที่ผ่านมา</span></p>
                     <div className="grid grid-cols-2 gap-2">
                       {SCORE_LABELS.map((label, i) => (
                         <div key={i} className="flex items-center gap-2">
-                          <span className="w-6 h-6 rounded-full bg-white border border-black text-[10px] font-bold text-[#332b1f] flex items-center justify-center shrink-0">
+                          <span className="w-6 h-6 rounded-full bg-white shadow-sm text-[10px] font-bold text-[#332b1f] flex items-center justify-center shrink-0">
                             {i}
                           </span>
                           <span className="text-xs">{label}</span>
@@ -318,7 +318,7 @@ export default function MentalHealthQuiz() {
                 <div className="space-y-5">
                   <div className="flex items-center gap-3">
                     <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center border border-black shrink-0"
+                      className="w-10 h-10 rounded-xl flex items-center justify-center shadow-sm shrink-0"
                       style={{ backgroundColor: currentCat.bg }}
                     >
                       <span
@@ -386,7 +386,7 @@ export default function MentalHealthQuiz() {
               {step === "result" && (
                 <div className="space-y-5">
                   <div className="text-center space-y-2">
-                    <div className="w-14 h-14 rounded-full bg-[#e5f5ec] border border-black flex items-center justify-center mx-auto">
+                    <div className="w-14 h-14 rounded-full bg-[#e5f5ec] shadow-sm flex items-center justify-center mx-auto">
                       <span
                         className="material-symbols-outlined text-2xl text-[#4e7c5f]"
                         style={{ fontVariationSettings: "'FILL' 1" }}
@@ -407,11 +407,11 @@ export default function MentalHealthQuiz() {
                       return (
                         <div
                           key={cat.id}
-                          className="rounded-xl p-4 border border-black flex items-center gap-4"
+                          className="rounded-xl p-4 shadow-sm flex items-center gap-4"
                           style={{ backgroundColor: cat.bg }}
                         >
                           <div
-                            className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 border border-black bg-white"
+                            className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 shadow-sm bg-white"
                           >
                             <span
                               className="material-symbols-outlined text-base"
@@ -448,7 +448,7 @@ export default function MentalHealthQuiz() {
                     })}
                   </div>
 
-                  <div className="bg-[#f5f0e8] rounded-xl p-4 border border-black text-sm text-[#6b5e4d] leading-relaxed space-y-2">
+                  <div className="bg-[#f5f0e8] rounded-xl p-4 shadow-sm text-sm text-[#6b5e4d] leading-relaxed space-y-2">
                     <div className="flex gap-3">
                       {[
                         { label: "ต่ำ (0–3)", color: "#4e7c5f", bg: "#e5f5ec" },
@@ -478,7 +478,7 @@ export default function MentalHealthQuiz() {
               {step !== "intro" && step !== "result" && (
                 <button
                   onClick={handlePrev}
-                  className="flex-1 py-3 rounded-xl border border-black text-sm font-semibold text-[#6b5e4d] bg-white hover:bg-[#f5f0e8] active:scale-95 transition-all"
+                  className="flex-1 py-3 rounded-xl shadow-sm text-sm font-semibold text-[#6b5e4d] bg-white hover:bg-[#f5f0e8] active:scale-95 transition-all"
                 >
                   ← ย้อนกลับ
                 </button>
@@ -486,7 +486,7 @@ export default function MentalHealthQuiz() {
               {step === "result" ? (
                 <button
                   onClick={handleFinish}
-                  className="flex-1 py-3 rounded-xl border border-black text-sm font-semibold text-white active:scale-95 transition-all"
+                  className="flex-1 py-3 rounded-xl shadow-sm text-sm font-semibold text-white active:scale-95 transition-all"
                   style={{ background: "linear-gradient(135deg, #4e7c5f, #6ba880)" }}
                 >
                   เสร็จสิ้น
@@ -495,7 +495,7 @@ export default function MentalHealthQuiz() {
                 <button
                   onClick={handleNext}
                   disabled={typeof step === "number" && !isCatComplete(step)}
-                  className="flex-1 py-3 rounded-xl border border-black text-sm font-semibold text-white active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="flex-1 py-3 rounded-xl shadow-sm text-sm font-semibold text-white active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                   style={{ background: "linear-gradient(135deg, #4e7c5f, #6ba880)" }}
                 >
                   {step === "intro"

@@ -16,10 +16,10 @@ export default function SignOutButton() {
   return (
     <button
       onClick={handleSignOut}
-      className="w-10 h-10 flex items-center justify-center rounded-full bg-white/15 text-white hover:bg-white/25 transition-colors"
+      className="w-11 h-11 flex items-center justify-center rounded-2xl bg-white/75 backdrop-blur-md border border-white/60 shadow-[0_4px_24px_rgba(123,111,255,0.18)] text-[#7B6FFF] hover:bg-white/95 hover:scale-105 hover:shadow-[0_6px_28px_rgba(123,111,255,0.28)] active:scale-95 transition-all cursor-pointer"
       title="ออกจากระบบ"
     >
-      <span className="material-symbols-outlined text-sm">logout</span>
+      <span className="material-symbols-outlined" style={{ fontSize: "20px" }}>logout</span>
     </button>
   );
 }

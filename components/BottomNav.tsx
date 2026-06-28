@@ -6,8 +6,8 @@ import { useQuiz } from "@/lib/quiz-context";
 
 const navItems = [
   { href: "/home", label: "Home", icon: "auto_awesome" },
-  { href: "/music", label: "Music", icon: "music_note" },
-  { href: "/insight", label: "Insight", icon: "insights" },
+  { href: "/activity", label: "Activity", icon: "self_improvement" },
+  { href: "/profile", label: "Profile", icon: "insights" },
 ];
 
 export default function BottomNav() {
@@ -16,30 +16,30 @@ export default function BottomNav() {
   if (quizOpen) return null;
 
   return (
-    <nav className="fixed bottom-0 w-full z-60 flex justify-around items-end px-8 pb-3 bg-linear-to-b from-[#a89cc8]/85 via-[#8070b8]/85 to-[#5548a0]/90 backdrop-blur-xl h-20 rounded-t-[3rem] border border-black shadow-[0_-4px_32px_rgba(52,45,120,0.25)]">
+    <nav className="fixed bottom-0 w-full z-60 flex justify-around items-center px-4 pb-3 pt-2 bg-white/90 backdrop-blur-xl h-18 rounded-t-3xl shadow-[0_-6px_28px_rgba(123,111,255,0.11)]">
       {navItems.map((item) => {
         const isActive = pathname === item.href;
         return (
           <Link
             key={item.href}
             href={item.href}
-            className={`flex flex-col items-center justify-center px-5 py-2 rounded-full transition-all ${
+            className={`flex flex-col items-center justify-center gap-0.5 px-5 py-2 rounded-2xl transition-all duration-200 ${
               isActive
-                ? "bg-white/25 text-white scale-105 shadow-[0_0_12px_rgba(255,255,255,0.2)]"
-                : "text-white/50 hover:bg-white/10 hover:text-white/80"
+                ? "text-[#7B6FFF] bg-[#7B6FFF]/10"
+                : "text-[#B0ABCC] hover:text-[#7B6FFF]"
             }`}
           >
             <span
-              className="material-symbols-outlined"
+              className="material-symbols-outlined text-[22px]"
               style={
                 isActive
-                  ? { fontVariationSettings: "'FILL' 1" }
-                  : undefined
+                  ? { fontVariationSettings: "'FILL' 1, 'wght' 400, 'opsz' 22" }
+                  : { fontVariationSettings: "'FILL' 0, 'wght' 300, 'opsz' 22" }
               }
             >
               {item.icon}
             </span>
-            <span className="text-xs font-medium">{item.label}</span>
+            <span className="text-[10px] font-medium tracking-wide">{item.label}</span>
           </Link>
         );
       })}

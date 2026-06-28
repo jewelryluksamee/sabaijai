@@ -1,3 +1,4 @@
+import Header from "@/components/Header";
 import BottomNav from "@/components/BottomNav";
 import MoodCalendar from "@/components/MoodCalendar";
 import QuizHistory, { type QuizEntry } from "@/components/QuizHistory";
@@ -129,7 +130,6 @@ async function getOrRefreshInsight(userId: string, posts: PostData[]): Promise<A
   const cached = insightDoc.data();
   const cachedCount: number = cached?.generatedAtCount ?? 0;
 
-  // Regenerate every 3 new posts (at counts 3, 6, 9, …)
   const shouldRegenerate = Math.floor(total / 3) > Math.floor(cachedCount / 3);
 
   if (!shouldRegenerate && cached?.summary) {
@@ -141,7 +141,6 @@ async function getOrRefreshInsight(userId: string, posts: PostData[]): Promise<A
   }
 
   if (total < 3 && !cached?.summary) {
-    // Not yet enough posts for first generation
     return {
       ...fallback,
       summary: `มีบันทึก ${total} รายการแล้ว อีก ${3 - total} รายการจะได้รับการวิเคราะห์ AI ครั้งแรก`,
@@ -159,7 +158,7 @@ async function getOrRefreshInsight(userId: string, posts: PostData[]): Promise<A
   return insight;
 }
 
-export default async function InsightPage() {
+export default async function ProfilePage() {
   const userId = await getCurrentUserId();
 
   const now = new Date();
@@ -175,19 +174,16 @@ export default async function InsightPage() {
     userId ? getQuizHistory(userId) : Promise.resolve([]),
   ]);
 
-  // stats always based on 7-day posts
   const posts = weeklyPosts;
   const todaySummary = getDailyEmotionSummary(posts, now);
   const yesterdaySummary = getDailyEmotionSummary(posts, yesterday);
   const total = posts.length;
 
-  // --- Emotion distribution ---
   const emotionCounts: Partial<Record<EmotionCategory, number>> = {};
   for (const post of posts) {
     emotionCounts[post.emotion] = (emotionCounts[post.emotion] ?? 0) + 1;
   }
 
-  // Separate critical risk before chart calculations
   const criticalRiskCount = emotionCounts.CRITICAL_RISK ?? 0;
   const emotionCountsWithoutCritical = Object.fromEntries(
     (Object.entries(emotionCounts) as [EmotionCategory, number][]).filter(
@@ -196,21 +192,17 @@ export default async function InsightPage() {
   ) as Partial<Record<EmotionCategory, number>>;
   const totalWithoutCritical = total - criticalRiskCount;
 
-  // Top 3 emotions for the donut chart (excluding CRITICAL_RISK)
   const top3 = (Object.entries(emotionCountsWithoutCritical) as [EmotionCategory, number][])
     .sort((a, b) => b[1] - a[1])
     .slice(0, 3);
 
-  // Stability = (HAPPY + NEUTRAL) / totalWithoutCritical
   const stableCount = (emotionCountsWithoutCritical.HAPPY ?? 0) + (emotionCountsWithoutCritical.NEUTRAL ?? 0);
   const stabilityPct = totalWithoutCritical > 0 ? Math.round((stableCount / totalWithoutCritical) * 100) : 0;
 
-  // --- Dominant emotion (excluding CRITICAL_RISK) ---
   const dominantEntry = top3[0] ?? (["NEUTRAL", 0] as [EmotionCategory, number]);
   const dominantEmotion = dominantEntry[0] as EmotionCategory;
   const dominantConfig = emotionConfig[dominantEmotion];
 
-  // --- Dominant mood color ---
   const moodCounts: Record<string, number> = {};
   for (const post of posts) {
     moodCounts[post.mood] = (moodCounts[post.mood] ?? 0) + 1;
@@ -219,7 +211,6 @@ export default async function InsightPage() {
     Object.entries(moodCounts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? "green";
   const dominantMoodInfo = moodColorMap[dominantMood] ?? moodColorMap.green;
 
-  // --- Donut chart segments (excluding CRITICAL_RISK) ---
   const donutSegments = top3.map(([emotion, count], i) => ({
     emotion,
     count,
@@ -231,7 +222,6 @@ export default async function InsightPage() {
     color: emotionConfig[emotion].chartColor,
   }));
 
-  // --- AI insight (cached, refreshes every 3 posts) ---
   let aiInsight: AIInsight;
   if (!userId) {
     aiInsight = {
@@ -262,21 +252,20 @@ export default async function InsightPage() {
 
   return (
     <>
+      <Header />
       <main className="pt-8 pb-32 px-6 max-w-5xl mx-auto space-y-10">
-        
 
         {/* Hero */}
         <section className="space-y-2">
           <h2 className="text-4xl md:text-5xl font-[var(--font-display)] font-extrabold tracking-tight text-[#332b1f]">
-            Insight
+            Profile
           </h2>
           <p className="text-[#6b5e4d] text-lg max-w-lg leading-relaxed">
             สำรวจอารมณ์ของคุณผ่านข้อมูลและพลังของ AI
             เพื่อความเข้าใจตนเองที่ลึกซึ้งยิ่งขึ้น
           </p>
-  
-          {/* Mood Calendar — top of page */}
-        <MoodCalendar posts={serializedAllPosts} />
+
+          <MoodCalendar posts={serializedAllPosts} />
         </section>
 
         {/* Bento Grid */}
@@ -404,7 +393,7 @@ export default async function InsightPage() {
                   </span>
                   <div>
                     <p className="text-[10px] font-bold uppercase tracking-widest text-red-700">ต้องการความช่วยเหลือ</p>
-                    <p className="text-xl  font-bold text-[#332b1f]">
+                    <p className="text-xl font-bold text-[#332b1f]">
                       <span style={{ color: "#c00000" }}> พบ {criticalRiskCount} รายการ</span> เสี่ยงสูง
                     </p>
                   </div>
@@ -421,7 +410,7 @@ export default async function InsightPage() {
             )}
           </div>
 
-          {/* Color of the Week — now shares row with Compare */}
+          {/* Color of the Week */}
           <div
             className="md:col-span-4 rounded-xl p-8 text-white flex flex-col gap-6 shadow-xl relative overflow-hidden grainy-texture"
             style={{ backgroundColor: total > 0 ? dominantMoodInfo.hex : "#4e7c5f" }}
@@ -462,7 +451,6 @@ export default async function InsightPage() {
               </h3>
             </div>
             <div className="grid grid-cols-2 gap-4">
-              {/* Yesterday */}
               <div className="rounded-xl p-6 shadow-sm bg-[#f5f0e8] flex flex-col items-center gap-3 text-center">
                 <p className="text-[10px] uppercase tracking-widest font-bold text-[#9a8b7a]">เมื่อวาน</p>
                 {yesterdaySummary.dominant ? (
@@ -483,7 +471,6 @@ export default async function InsightPage() {
                   </>
                 )}
               </div>
-              {/* Today */}
               <div className="rounded-xl p-6 shadow-sm bg-[#eaf3ec] flex flex-col items-center gap-3 text-center">
                 <p className="text-[10px] uppercase tracking-widest font-bold text-[#4e7c5f]">วันนี้</p>
                 {todaySummary.dominant ? (
@@ -505,7 +492,6 @@ export default async function InsightPage() {
                 )}
               </div>
             </div>
-            {/* Change indicator */}
             {todaySummary.dominant && yesterdaySummary.dominant && (
               <div className="mt-4 text-center">
                 {todaySummary.dominant === yesterdaySummary.dominant ? (
@@ -565,17 +551,11 @@ export default async function InsightPage() {
               </div>
 
               <div className="flex flex-col md:flex-row items-center gap-12">
-
-                {/* Breathing Circle */}
                 <div className="flex-shrink-0 flex flex-col items-center gap-5">
                   <div className="relative w-52 h-52 flex items-center justify-center">
-                    {/* Fixed boundary ring */}
                     <div className="absolute w-52 h-52 rounded-full border-2 border-red-200" />
-                    {/* Soft outer wave */}
                     <div className="gr-wave absolute w-44 h-44 rounded-full bg-red-100" />
-                    {/* Core fill — clearly expands */}
                     <div className="gr-core absolute w-44 h-44 rounded-full" style={{ background: "rgba(192,0,0,0.20)", boxShadow: "0 0 0 4px rgba(192,0,0,0.10)" }} />
-                    {/* Center disc */}
                     <div className="relative z-10 w-[72px] h-[72px] rounded-full bg-white border-2 border-red-300 shadow-md flex items-center justify-center">
                       <div className="relative w-full h-full flex items-center justify-center">
                         <span className="gr-in  absolute text-[11px] font-bold text-red-700 text-center leading-tight">หายใจ<br/>เข้า</span>
@@ -584,8 +564,6 @@ export default async function InsightPage() {
                       </div>
                     </div>
                   </div>
-
-                  {/* Phase timing row */}
                   <div className="flex items-center gap-1">
                     {(["หายใจเข้า · 4s", "กลั้น · 4s", "หายใจออก · 4s"] as const).map((label, i) => (
                       <span key={i} className="px-2 py-1 rounded-full bg-red-50 border border-red-200 text-[10px] font-bold text-red-600">
@@ -598,7 +576,6 @@ export default async function InsightPage() {
                   </p>
                 </div>
 
-                {/* 5-4-3-2-1 Technique */}
                 <div className="flex-1">
                   <p className="text-sm font-bold text-[#332b1f] mb-4">เทคนิค 5-4-3-2-1 ช่วยดึงสติกลับสู่ปัจจุบัน</p>
                   <div className="grid grid-cols-1 sm:grid-cols-5 gap-2">
@@ -622,7 +599,6 @@ export default async function InsightPage() {
                     ))}
                   </div>
                 </div>
-
               </div>
             </div>
           )}
@@ -648,9 +624,7 @@ export default async function InsightPage() {
               </p>
               <div className="bg-white rounded-lg p-5 space-y-3 shadow-sm">
                 <h4 className="text-sm font-bold text-[#4e7c5f] flex items-center gap-2">
-                  <span className="material-symbols-outlined text-sm">
-                    lightbulb
-                  </span>
+                  <span className="material-symbols-outlined text-sm">lightbulb</span>
                   วิธีรับมือ (How to cope)
                 </h4>
                 <ul className="space-y-2">
@@ -666,7 +640,6 @@ export default async function InsightPage() {
               </div>
             </div>
           </div>
-
         </div>
 
         {/* Quiz History */}

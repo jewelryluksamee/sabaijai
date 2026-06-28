@@ -19,13 +19,21 @@ type Post = { id: string; content: string; mood: string; moodLabel: string; cand
 type Period = "today" | "month" | "all";
 const LABELS: Record<Period, string> = { today: "วันนี้", month: "เดือนนี้", all: "ทั้งหมด" };
 
+const POSTS_PER_PAGE = 6;
+
 export default function HomeFeed({ posts, currentUserId }: { posts: Post[]; currentUserId?: string | null }) {
   const router = useRouter();
   const [period, setPeriod] = useState<Period>("all");
+  const [page, setPage] = useState(1);
   const [revealed, setRevealed] = useState<Set<string>>(new Set());
   const [deletingIds, setDeletingIds] = useState<Set<string>>(new Set());
   const [localDeleted, setLocalDeleted] = useState<Set<string>>(new Set());
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+
+  function changePeriod(p: Period) {
+    setPeriod(p);
+    setPage(1);
+  }
 
   async function handleDelete(postId: string) {
     setDeletingIds((prev) => new Set(prev).add(postId));
@@ -44,6 +52,9 @@ export default function HomeFeed({ posts, currentUserId }: { posts: Post[]; curr
     return true;
   });
 
+  const totalPages = Math.max(1, Math.ceil(filtered.length / POSTS_PER_PAGE));
+  const paginated = filtered.slice((page - 1) * POSTS_PER_PAGE, page * POSTS_PER_PAGE);
+
   return (
     <section className="max-w-4xl mx-auto mt-12 px-6 space-y-8">
       <div className="flex items-end justify-between border-b-2 border-[#f5eed8] pb-4">
@@ -60,8 +71,8 @@ export default function HomeFeed({ posts, currentUserId }: { posts: Post[]; curr
         {(["today", "month", "all"] as Period[]).map((p) => (
           <button
             key={p}
-            onClick={() => setPeriod(p)}
-            className="px-4 py-1.5 rounded-full text-sm font-bold border border-black transition-colors cursor-pointer"
+            onClick={() => changePeriod(p)}
+            className="px-4 py-1.5 rounded-full text-sm font-bold shadow-sm transition-colors cursor-pointer"
             style={period === p
               ? { backgroundColor: "#332b1f", color: "#fff" }
               : { backgroundColor: "#fff", color: "#6b5e4d" }}
@@ -81,14 +92,14 @@ export default function HomeFeed({ posts, currentUserId }: { posts: Post[]; curr
           </div>
         )}
 
-        {filtered.map((post) => {
+        {paginated.map((post) => {
           const colors = moodPalette[post.mood] ?? moodPalette.blue;
           const emotion = (post.emotion ?? "NEUTRAL") as EmotionCategory;
           const sensitive = emotion === "CRITICAL_RISK" || !!post.hasProfanity;
           return (
             <div
               key={post.id}
-              className="bg-white rounded-xl p-8 space-y-6 relative overflow-hidden group border border-black shadow-[0_2px_20px_rgba(0,0,0,0.06)]"
+              className="bg-white rounded-xl p-8 space-y-6 relative overflow-hidden group shadow-[0_2px_20px_rgba(0,0,0,0.06)]"
             >
               <div
                 className="absolute top-0 right-0 w-24 h-24 rounded-bl-[100%] transition-all group-hover:scale-110"
@@ -199,6 +210,54 @@ export default function HomeFeed({ posts, currentUserId }: { posts: Post[]; curr
           );
         })}
       </div>
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-2 pt-4 pb-2">
+          <button
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={page === 1}
+            className="w-9 h-9 flex items-center justify-center rounded-full bg-white text-[#7B6FFF] shadow-sm disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#EDE9FF] transition-colors"
+          >
+            <span className="material-symbols-outlined text-[18px]">chevron_left</span>
+          </button>
+
+          {(() => {
+            const delta = 2;
+            const start = Math.max(1, page - delta);
+            const end = Math.min(totalPages, page + delta);
+            const pages: (number | "…")[] = [];
+            if (start > 1) { pages.push(1); if (start > 2) pages.push("…"); }
+            for (let n = start; n <= end; n++) pages.push(n);
+            if (end < totalPages) { if (end < totalPages - 1) pages.push("…"); pages.push(totalPages); }
+            return pages.map((n, i) =>
+              n === "…" ? (
+                <span key={`ellipsis-${i}`} className="w-9 h-9 flex items-center justify-center text-[#B0ABCC] text-sm select-none">…</span>
+              ) : (
+                <button
+                  key={n}
+                  onClick={() => setPage(n as number)}
+                  className="w-9 h-9 flex items-center justify-center rounded-full text-sm font-semibold transition-colors"
+                  style={
+                    n === page
+                      ? { backgroundColor: "#7B6FFF", color: "#fff" }
+                      : { backgroundColor: "#fff", color: "#7B6FFF" }
+                  }
+                >
+                  {n}
+                </button>
+              )
+            );
+          })()}
+
+          <button
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            disabled={page === totalPages}
+            className="w-9 h-9 flex items-center justify-center rounded-full bg-white text-[#7B6FFF] shadow-sm disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#EDE9FF] transition-colors"
+          >
+            <span className="material-symbols-outlined text-[18px]">chevron_right</span>
+          </button>
+        </div>
+      )}
     </section>
   );
 }

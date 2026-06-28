@@ -49,7 +49,7 @@ export default function PostHistory({ posts }: { posts: PostData[] }) {
           <button
             key={p}
             onClick={() => setPeriod(p)}
-            className="px-4 py-1.5 rounded-full text-sm font-bold border border-black transition-colors cursor-pointer"
+            className="px-4 py-1.5 rounded-full text-sm font-bold shadow-sm transition-colors cursor-pointer"
             style={period === p
               ? { backgroundColor: "#332b1f", color: "#fff" }
               : { backgroundColor: "#fff", color: "#6b5e4d" }}
@@ -72,17 +72,17 @@ export default function PostHistory({ posts }: { posts: PostData[] }) {
             return (
               <details
                 key={i}
-                className="group bg-white rounded-xl border border-black grainy-texture overflow-hidden"
+                className="group bg-white rounded-xl shadow-sm grainy-texture overflow-hidden"
               >
                 <summary className="flex gap-4 items-center p-5 cursor-pointer list-none select-none">
                   <div
-                    className="w-10 h-10 rounded-full shrink-0 border border-black"
+                    className="w-10 h-10 rounded-full shrink-0 border border-black shadow-sm"
                     style={{ backgroundColor: moodInfo.hex }}
                   />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap mb-1">
                       <span
-                        className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border border-black"
+                        className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-sm"
                         style={{ backgroundColor: cfg.chartColor + "25", color: cfg.color }}
                       >
                         <span className="material-symbols-outlined" style={{ fontSize: "12px", fontVariationSettings: "'FILL' 1" }}>
@@ -101,7 +101,7 @@ export default function PostHistory({ posts }: { posts: PostData[] }) {
 
                 <div className="px-5 pb-5 space-y-4 border-t border-black/10 pt-4">
                   {post.aiResponse && (
-                    <div className="rounded-lg border border-black bg-[#f5eed8] p-4 flex gap-3">
+                    <div className="rounded-lg shadow-sm bg-[#f5eed8] p-4 flex gap-3">
                       <span
                         className="material-symbols-outlined text-[#4e7c5f] shrink-0 mt-0.5"
                         style={{ fontVariationSettings: "'FILL' 1", fontSize: "18px" }}

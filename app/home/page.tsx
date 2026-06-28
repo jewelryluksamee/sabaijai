@@ -1,4 +1,3 @@
-import Header from "@/components/Header";
 import BottomNav from "@/components/BottomNav";
 import MoodEntryForm from "@/components/MoodEntryForm";
 import StarrySky from "@/components/StarrySky";
@@ -47,10 +46,9 @@ export default async function HomePage() {
 
   return (
     <>
-      <Header />
-      <main className="pt-16 pb-32">
+      <main className="pb-32">
         {/* Sky Banner */}
-        <section className="relative w-full h-64 sky-gradient overflow-hidden flex flex-col justify-center items-center px-6 border border-black">
+        <section className="relative w-full h-80 sky-gradient overflow-hidden flex flex-col justify-center items-center px-6">
 
           {/* Dark overlay for depth */}
           <div className="absolute inset-0 bg-black/15 pointer-events-none" />
@@ -75,7 +73,7 @@ export default async function HomePage() {
           {/* Flying image decorations */}
           <FlyingImages />
 
-          <div className="relative z-10 text-center space-y-5 max-w-xl">
+          <div className="relative z-10 text-center space-y-5 max-w-xl -mt-10">
             <h2 className="text-2xl md:text-4xl [font-family:var(--font-display)] font-bold text-white/90 leading-tight drop-shadow-lg" style={{ textShadow: "0 2px 24px rgba(80,60,160,0.5)" }}>
               คุณไม่ได้อยู่คนเดียวนะ
             </h2>
@@ -85,14 +83,16 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* Mood Entry Card */}
-        <div className="max-w-4xl mx-auto -mt-10 relative z-20 px-6">
-          <div className="bg-white rounded-xl p-8 border border-black shadow-[0_4px_32px_rgba(78,124,95,0.12)]">
-            <MoodEntryForm />
+        {/* Main bg consumes sky bottom — upward half-circle */}
+        <div className="relative z-20 bg-linear-to-b from-[#E8E2FF] to-[#F8F6FF] -mt-8 pt-10">
+          <div className="max-w-4xl mx-auto px-6">
+            <div className="bg-white rounded-2xl -mt-25 p-8 shadow-[0_4px_32px_rgba(123,111,255,0.12)]">
+              <MoodEntryForm />
+            </div>
           </div>
-        </div>
 
-        <HomeFeed posts={posts} currentUserId={currentUserId} />
+          <HomeFeed posts={posts} currentUserId={currentUserId} />
+        </div>
       </main>
 
       <BottomNav />

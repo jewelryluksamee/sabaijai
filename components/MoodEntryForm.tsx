@@ -71,7 +71,7 @@ export default function MoodEntryForm() {
                 key={value}
                 type="button"
                 onClick={() => setSelectedMood(value === selectedMood ? null : value)}
-                className="w-7 h-7 rounded-full shrink-0 border border-black transition-all duration-200"
+                className="w-7 h-7 rounded-full shrink-0 border border-black shadow-sm transition-all duration-200"
                 style={{
                   backgroundColor: hex,
                   opacity: selectedMood && selectedMood !== value ? 0.3 : 1,
@@ -95,7 +95,7 @@ export default function MoodEntryForm() {
             name="content"
             rows={3}
             required
-            className="w-full mt-2 bg-[#e8dfc6] rounded-lg px-5 py-4 border border-black outline-none focus:ring-2 focus:ring-[#4e7c5f]/20 text-[#332b1f] placeholder:text-[#c8baa8] resize-none transition-all"
+            className="w-full mt-2 bg-[#e8dfc6] rounded-lg px-5 py-4 shadow-sm outline-none focus:ring-2 focus:ring-[#4e7c5f]/20 text-[#332b1f] placeholder:text-[#c8baa8] resize-none transition-all"
             placeholder="วันนี้เจอเรื่องอะไรมาบ้าง..."
           />
         </div>
@@ -104,7 +104,7 @@ export default function MoodEntryForm() {
           <button
             type="submit"
             disabled={pending || !selectedMood}
-            className="px-8 py-4 mt-2 bg-linear-to-r from-[#7c5cbf] to-[#6b4aad] text-white rounded-full border border-black font-semibold shadow-md hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
+            className="px-8 py-4 mt-2 bg-linear-to-r from-[#7c5cbf] to-[#6b4aad] text-white rounded-full shadow-sm font-semibold shadow-md hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {pending ? "กำลังส่ง..." : "แชร์ความรู้สึก"}
           </button>

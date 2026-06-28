@@ -16,7 +16,6 @@ import {
 } from "firebase/firestore";
 import { onAuthStateChanged, type User } from "firebase/auth";
 import { db, auth } from "@/lib/firebase-client";
-import Header from "@/components/Header";
 import BottomNav from "@/components/BottomNav";
 
 /* ─── Types ─────────────────────────────────────────────── */
@@ -321,8 +320,6 @@ export default function MusicPage() {
 
   return (
     <>
-      <Header />
-
       <div className="fixed inset-0 z-0 pointer-events-none">
         <div className="absolute -top-[10%] -left-[5%] w-[50%] h-[50%] bg-[#c2e3c8]/20 blur-[120px] rounded-full" />
         <div className="absolute bottom-0 right-0 w-[60%] h-[60%] bg-[#d4e8c8]/15 blur-[150px] rounded-full" />
@@ -346,7 +343,7 @@ export default function MusicPage() {
 
           {/* ── Share Panel ── */}
           <div className="lg:col-span-4">
-            <div className="bg-white/100 border border-black/100 rounded-2xl p-5 space-y-4">
+            <div className="bg-white/100 shadow-sm/100 rounded-2xl p-5 space-y-4">
               <p className="text-[#2a4d32] font-semibold text-sm">Let&apos;s Share a Healing Song</p>
 
               {/* Search input */}
@@ -358,7 +355,7 @@ export default function MusicPage() {
                   onChange={(e) => setQuery(e.target.value)}
                   onFocus={() => { if (searchResults.length > 0) setShowResults(true); }}
                   placeholder="ค้นหาเพลง หรือวาง YouTube link..."
-                  className="w-full bg-black/5 rounded-xl pl-10 pr-9 py-3.5 text-[#332b1f] placeholder-[#6b5e4d]/40 border border-black/30 outline-none focus:ring-1 focus:ring-[#4e7c5f]/40 text-sm transition-all"
+                  className="w-full bg-black/5 rounded-xl pl-10 pr-9 py-3.5 text-[#332b1f] placeholder-[#6b5e4d]/40 shadow-sm/30 outline-none focus:ring-1 focus:ring-[#4e7c5f]/40 text-sm transition-all"
                 />
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center">
                   {searching && <span className="material-symbols-outlined text-black/40 text-lg animate-spin">progress_activity</span>}
@@ -371,11 +368,11 @@ export default function MusicPage() {
 
                 {/* Dropdown */}
                 {showResults && searchResults.length > 0 && (
-                  <div className="absolute left-0 right-0 top-full mt-1 bg-white border border-black/15 rounded-xl shadow-xl z-50 max-h-64 overflow-y-auto">
+                  <div className="absolute left-0 right-0 top-full mt-1 bg-white shadow-sm/15 rounded-xl shadow-xl z-50 max-h-64 overflow-y-auto">
                     {searchResults.map((r) => (
                       <button key={r.videoId} onClick={() => selectResult(r)}
                         className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-[#f5f0eb] transition-colors text-left">
-                        <img src={r.thumbnail} alt={r.title} className="w-14 h-9 object-cover rounded-md shrink-0 border border-black/10" />
+                        <img src={r.thumbnail} alt={r.title} className="w-14 h-9 object-cover rounded-md shrink-0 shadow-sm/10" />
                         <div className="min-w-0">
                           <p className="text-[#332b1f] text-xs font-semibold line-clamp-2 leading-snug">{r.title}</p>
                           <p className="text-[#6b5e4d] text-[10px] mt-0.5 truncate">{r.channel}</p>
@@ -388,12 +385,12 @@ export default function MusicPage() {
 
               {/* Preview card */}
               {preview && (
-                <div className="bg-white/70 rounded-xl overflow-hidden border border-black">
+                <div className="bg-white/70 rounded-xl overflow-hidden shadow-sm">
                   <div className="relative aspect-video">
                     <img className="w-full h-full object-cover" src={preview.thumbnail} alt={preview.title} />
                     <a href={`https://www.youtube.com/watch?v=${preview.videoId}`} target="_blank" rel="noopener noreferrer"
                       className="absolute inset-0 bg-black/20 flex items-center justify-center hover:bg-black/30 transition-colors">
-                      <div className="w-11 h-11 rounded-full bg-white/30 backdrop-blur-md flex items-center justify-center border border-black">
+                      <div className="w-11 h-11 rounded-full bg-white/30 backdrop-blur-md flex items-center justify-center shadow-sm">
                         <span className="material-symbols-outlined text-white text-xl">play_arrow</span>
                       </div>
                     </a>
@@ -431,7 +428,7 @@ export default function MusicPage() {
               <textarea
                 value={caption}
                 onChange={(e) => setCaption(e.target.value)}
-                className="w-full bg-black/5 rounded-xl px-4 py-3 text-[#332b1f] placeholder-[#6b5e4d]/40 border border-black/30 outline-none focus:ring-1 focus:ring-[#4e7c5f]/40 resize-none text-sm"
+                className="w-full bg-black/5 rounded-xl px-4 py-3 text-[#332b1f] placeholder-[#6b5e4d]/40 shadow-sm/30 outline-none focus:ring-1 focus:ring-[#4e7c5f]/40 resize-none text-sm"
                 placeholder="Add a caption... (optional)"
                 rows={2}
               />
@@ -439,7 +436,7 @@ export default function MusicPage() {
               <button
                 onClick={handleShare}
                 disabled={!preview || sharing}
-                className="w-full h-11 border border-black/40 bg-[#7c5cbf] hover:bg-[#6b4aad] text-white rounded-xl font-bold shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed text-sm"
+                className="w-full h-11 shadow-sm/40 bg-[#7c5cbf] hover:bg-[#6b4aad] text-white rounded-xl font-bold shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed text-sm"
               >
                 <span>{sharing ? "Sharing..." : "Share to Community"}</span>
                 <span className="material-symbols-outlined text-base">send</span>
@@ -455,7 +452,7 @@ export default function MusicPage() {
               {/* Top row: title + sort */}
               <div className="flex items-center justify-between gap-3">
                 <h3 className="text-lg font-bold text-[#332b1f] shrink-0">Healing Songs</h3>
-                <div className="flex border border-black/20 rounded-lg overflow-hidden bg-white/60">
+                <div className="flex shadow-sm/20 rounded-lg overflow-hidden bg-white/60">
                   <button onClick={() => setSortBy("latest")}
                     className={`px-3 py-1.5 text-xs font-medium transition-all ${sortBy === "latest" ? "bg-[#332b1f] text-white" : "text-[#6b5e4d] hover:bg-black/5"}`}>
                     Latest
@@ -470,12 +467,12 @@ export default function MusicPage() {
               {/* Mood filter pills */}
               <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
                 <button onClick={() => setFilterMood("")}
-                  className={`shrink-0 px-3 py-1 rounded-full text-xs font-medium border transition-all ${!filterMood ? "bg-[#332b1f] text-white border-[#332b1f]" : "bg-white/60 text-[#6b5e4d] border-black/20 hover:border-black/40"}`}>
+                  className={`shrink-0 px-3 py-1 rounded-full text-xs font-medium transition-all ${!filterMood ? "bg-[#332b1f] text-white shadow-md" : "bg-white/60 text-[#6b5e4d] shadow-sm hover:shadow"}`}>
                   All
                 </button>
                 {MOOD_TAGS.map((m) => (
                   <button key={m.key} onClick={() => setFilterMood(filterMood === m.key ? "" : m.key)}
-                    className={`shrink-0 flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium border transition-all ${filterMood === m.key ? "bg-[#332b1f] text-white border-[#332b1f]" : "bg-white/60 text-[#6b5e4d] border-black/20 hover:border-black/40"}`}>
+                    className={`shrink-0 flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium transition-all ${filterMood === m.key ? "bg-[#332b1f] text-white shadow-md" : "bg-white/60 text-[#6b5e4d] shadow-sm hover:shadow"}`}>
                     {m.emoji} {m.label}
                   </button>
                 ))}
@@ -484,13 +481,13 @@ export default function MusicPage() {
 
             {/* Empty states */}
             {displayFeed.length === 0 && feed.length === 0 && (
-              <div className="bg-white/30 border border-black rounded-2xl p-10 text-center text-[#6b5e4d]">
+              <div className="bg-white/30 shadow-sm rounded-2xl p-10 text-center text-[#6b5e4d]">
                 <span className="material-symbols-outlined text-4xl mb-3 block text-black/10">music_note</span>
                 <p className="text-sm">No songs shared yet. Be the first!</p>
               </div>
             )}
             {displayFeed.length === 0 && feed.length > 0 && (
-              <div className="bg-white/30 border border-black/20 rounded-2xl p-8 text-center text-[#6b5e4d]">
+              <div className="bg-white/30 shadow-sm/20 rounded-2xl p-8 text-center text-[#6b5e4d]">
                 <p className="text-sm">ไม่พบเพลงที่ตรงกับที่ค้นหา</p>
               </div>
             )}
@@ -505,7 +502,7 @@ export default function MusicPage() {
 
                 return (
                   <div key={item.id}
-                    className="break-inside-avoid mb-3 bg-white/60 hover:bg-white/80 border border-black/80 rounded-2xl overflow-hidden transition-all hover:shadow-lg group relative">
+                    className="break-inside-avoid mb-3 bg-white/60 hover:bg-white/80 shadow-sm rounded-2xl overflow-hidden transition-all hover:shadow-lg group relative">
 
                     {/* Delete × button — only visible to the post owner */}
                     {currentUser?.uid === item.userId && (

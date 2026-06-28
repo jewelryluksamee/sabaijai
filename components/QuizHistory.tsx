@@ -26,7 +26,7 @@ export default function QuizHistory({ entries }: { entries: QuizEntry[] }) {
   return (
     <details className="group/qh" open>
       <summary className="flex items-center justify-between cursor-pointer list-none select-none mb-4">
-        <h3 className="text-2xl font-bold font-[var(--font-display)] text-[#332b1f]">
+        <h3 className="text-2xl font-bold [font-family:var(--font-display)] text-[#332b1f]">
           ประวัติแบบทดสอบ
           <span className="ml-2 text-base font-normal text-[#9a8b7a]">({entries.length})</span>
         </h3>
@@ -51,7 +51,7 @@ export default function QuizHistory({ entries }: { entries: QuizEntry[] }) {
             }, null);
 
             return (
-              <details key={entry.id} className="group bg-white rounded-xl border border-black overflow-hidden">
+              <details key={entry.id} className="group bg-white rounded-xl shadow-sm overflow-hidden">
                 <summary className="flex gap-4 items-center p-5 cursor-pointer list-none select-none">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap mb-2">
@@ -60,7 +60,7 @@ export default function QuizHistory({ entries }: { entries: QuizEntry[] }) {
                       </span>
                       {topCat && (
                         <span
-                          className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border border-black"
+                          className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold shadow-sm"
                           style={{ backgroundColor: topCat.bg, color: topCat.color }}
                         >
                           <span className="material-symbols-outlined" style={{ fontSize: "11px", fontVariationSettings: "'FILL' 1" }}>
@@ -78,7 +78,7 @@ export default function QuizHistory({ entries }: { entries: QuizEntry[] }) {
                         return (
                           <div
                             key={cat.id}
-                            className="w-3 h-3 rounded-full border border-black/10"
+                            className="w-3 h-3 rounded-full border border-black"
                             style={{ backgroundColor: level.color }}
                             title={`${cat.label}: ${score}/12`}
                           />

@@ -43,7 +43,7 @@ export default function MoodCalendar({ posts }: { posts: Post[] }) {
   const isCurrentMonth = year === today.getFullYear() && month === today.getMonth();
 
   return (
-    <section className="bg-[#faf7f3] rounded-2xl p-6 border border-black">
+    <section className="bg-[#faf7f3] rounded-2xl p-6 shadow-sm">
       <div className="flex items-center justify-between mb-5">
         <div>
           <h3 className="text-xl font-bold font-[var(--font-display)] text-[#332b1f] leading-tight">
@@ -56,7 +56,7 @@ export default function MoodCalendar({ posts }: { posts: Post[] }) {
         <div className="flex gap-2">
           <button
             onClick={() => setViewDate(new Date(year, month - 1, 1))}
-            className="w-9 h-9 rounded-xl border border-black bg-white flex items-center justify-center hover:bg-[#f0ece4] transition-colors active:scale-95"
+            className="w-9 h-9 rounded-xl shadow-sm bg-white flex items-center justify-center hover:bg-[#f0ece4] transition-colors active:scale-95"
             aria-label="เดือนก่อน"
           >
             <span className="material-symbols-outlined text-[#332b1f]" style={{ fontSize: "18px" }}>
@@ -66,7 +66,7 @@ export default function MoodCalendar({ posts }: { posts: Post[] }) {
           <button
             onClick={() => setViewDate(new Date(year, month + 1, 1))}
             disabled={isCurrentMonth}
-            className="w-9 h-9 rounded-xl border border-black bg-white flex items-center justify-center hover:bg-[#f0ece4] transition-colors active:scale-95 disabled:opacity-25 disabled:cursor-not-allowed"
+            className="w-9 h-9 rounded-xl shadow-sm bg-white flex items-center justify-center hover:bg-[#f0ece4] transition-colors active:scale-95 disabled:opacity-25 disabled:cursor-not-allowed"
             aria-label="เดือนถัดไป"
           >
             <span className="material-symbols-outlined text-[#332b1f]" style={{ fontSize: "18px" }}>

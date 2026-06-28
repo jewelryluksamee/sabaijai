@@ -16,7 +16,7 @@ export default function LoginPage() {
 
         {/* Brand mark */}
         <div className="flex items-center gap-3 mb-7">
-          <div className="w-12 h-12 rounded-2xl bg-[#fff9a0] border border-black flex items-center justify-center shadow-sm">
+          <div className="w-12 h-12 rounded-2xl bg-[#fff9a0] shadow-sm flex items-center justify-center shadow-sm">
             <Image src="/2.png" alt="Sabaijai" width={34} height={34} className="object-contain" />
           </div>
           <div className="flex flex-col leading-none">
@@ -44,19 +44,19 @@ export default function LoginPage() {
 
         {/* Feature tags */}
         <div className="flex gap-2 flex-wrap justify-center mb-7">
-          <span className="px-4 py-1.5 rounded-full bg-[#d4e8c8] border border-black text-[#2a4d32] text-xs font-semibold tracking-wide">
+          <span className="px-4 py-1.5 rounded-full bg-[#d4e8c8] shadow-sm text-[#2a4d32] text-xs font-semibold tracking-wide">
             แชร์ความรู้สึกโดยไม่ถูกตัดสิน
           </span>
-          <span className="px-4 py-1.5 rounded-full bg-[#e8d8a8] border border-black text-[#5a4a25] text-xs font-semibold tracking-wide">
+          <span className="px-4 py-1.5 rounded-full bg-[#e8d8a8] shadow-sm text-[#5a4a25] text-xs font-semibold tracking-wide">
             แชร์เพลงช่วยฮีลใจ
           </span>
-          <span className="px-4 py-1.5 rounded-full bg-[#c8dce8] border border-black text-[#253d5a] text-xs font-semibold tracking-wide">
+          <span className="px-4 py-1.5 rounded-full bg-[#c8dce8] shadow-sm text-[#253d5a] text-xs font-semibold tracking-wide">
             วิเคราะห์อารมณ์
           </span>
         </div>
 
         {/* Login card */}
-        <div className="w-full max-w-[360px] bg-white border border-black rounded-2xl shadow-[0_4px_32px_rgba(78,124,95,0.12)] overflow-hidden">
+        <div className="w-full max-w-[360px] bg-white shadow-sm rounded-2xl shadow-[0_4px_32px_rgba(78,124,95,0.12)] overflow-hidden">
           <div className="p-8 space-y-6">
             <div className="text-center">
               <h2 className="[font-family:var(--font-display)] text-xl font-bold text-[#332b1f]">
